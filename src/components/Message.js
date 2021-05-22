@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Message = ({ children, sent }) => (
-  <div style={{ textAlign: sent ? 'left' : 'right' }}>
+const Message = ({ children, received }) => (
+  <div style={{ textAlign: received ? 'right' : 'left' }}>
     <p>{children}</p>
   </div>
 );
 
 Message.propTypes = {
   children: PropTypes.string.isRequired,
-  sent: PropTypes.bool,
+  received: PropTypes.bool,
 };
 
 Message.defaultProps = {
-  sent: true,
+  received: true,
 };
 
 export default Message;

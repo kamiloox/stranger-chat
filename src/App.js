@@ -1,41 +1,34 @@
-import React, { useState } from 'react';
-import Message from './components/Message';
-
-const isEmpty = (value) => value.length === 0;
+import React, { useEffect, useState } from 'react';
+import Chat from './components/Chat';
+import {
+  emitSearch,
+  onLeaveChat,
+  onStrangerFound,
+  emitLeaveChat,
+  offStrangerFound,
+  offLeaveChat,
+} from './api/events';
 
 const App = () => {
-  const [currentMessage, setCurrentMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+  const [stranger, setStranger] = useState(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    onStrangerFound(setStranger);
+    onLeaveChat(() => setStranger(null));
 
-    if (!isEmpty(currentMessage)) {
-      setMessages([
-        ...messages,
-        { id: Date.now(), content: currentMessage, sent: true },
-      ]);
-      setCurrentMessage('');
-    }
-  };
+    return () => {
+      offStrangerFound();
+      offLeaveChat();
+    };
+  }, [setStranger]);
+
+  if (!stranger) return <button onClick={emitSearch}>Find stranger</button>;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '90vh' }}>
-      <div style={{ flexGrow: '1', height: '100%' }}>
-        {messages.map(({ id, content, sent }) => (
-          <Message sent={sent} key={id}>
-            {content}
-          </Message>
-        ))}
-      </div>
-      <form onSubmit={handleSubmit}>
-        <input
-          onChange={(e) => setCurrentMessage(e.target.value)}
-          value={currentMessage}
-        />
-        <button type="submit">&rarr;</button>
-      </form>
-    </div>
+    <>
+      <button onClick={() => emitLeaveChat(stranger)}>Leave chat</button>
+      <Chat stranger={stranger} />
+    </>
   );
 };
 
