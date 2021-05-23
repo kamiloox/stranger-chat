@@ -11,7 +11,7 @@ import {
   onLeaveChat,
   offMessageReceived,
 } from '../api/events';
-import Message from './Message';
+import Message from './Message/Message';
 
 const isEmpty = (value) => value.length === 0;
 
@@ -62,7 +62,7 @@ const Chat = ({ stranger, setStranger }) => {
     <>
       <button onClick={() => emitLeaveChat(stranger)}>Leave chat</button>
       <div style={{ display: 'flex', flexDirection: 'column', height: '90vh' }}>
-        <div style={{ flexGrow: '1', height: '100%' }}>
+        <div style={{ flexGrow: '1', height: '100%', display: 'flex', flexDirection: 'column' }}>
           {messages.map(({ date, content, receiver }) => (
             <Message received={receiver === stranger} key={date}>
               {content}
