@@ -1,35 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import Chat from './components/Chat';
 import {
-  emitSearch,
-  onLeaveChat,
+  emitEnterQueue,
+  emitMatch,
   onStrangerFound,
-  emitLeaveChat,
   offStrangerFound,
-  offLeaveChat,
+  emitLeaveQueue,
 } from './api/events';
 
 const App = () => {
   const [stranger, setStranger] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
 
+  let matchInterval;
   useEffect(() => {
-    onStrangerFound(setStranger);
-    onLeaveChat(() => setStranger(null));
+    onStrangerFound((data) => {
+      if (!data) return;
+
+      setStranger(data);
+      setIsSearching(false);
+    });
 
     return () => {
       offStrangerFound();
-      offLeaveChat();
     };
   }, [setStranger]);
 
-  if (!stranger) return <button onClick={emitSearch}>Find stranger</button>;
+  const handleEnterQueue = () => {
+    setIsSearching(true);
+    emitEnterQueue();
+    matchInterval = setInterval(() => {
+      emitMatch();
+    }, 1000);
+  };
 
-  return (
-    <>
-      <button onClick={() => emitLeaveChat(stranger)}>Leave chat</button>
-      <Chat stranger={stranger} />
-    </>
-  );
+  const handleLeaveQueue = () => {
+    clearInterval(matchInterval);
+    emitLeaveQueue();
+    setIsSearching(false);
+  };
+
+  if (isSearching) {
+    return (
+      <>
+        <p>Searching...</p>
+        <button onClick={handleLeaveQueue}>Stop searching</button>
+      </>
+    );
+  }
+
+  if (!stranger) return <button onClick={handleEnterQueue}>Find stranger</button>;
+
+  return <Chat stranger={stranger} setStranger={setStranger} />;
 };
 
 export default App;

@@ -14,10 +14,11 @@ const EVENTS = {
 export const socket = io(ENDPOINT);
 
 // Emitters
-export const emitSearch = () => {
-  socket.emit(EVENTS.enterQueue);
-  socket.emit(EVENTS.match);
-};
+export const emitEnterQueue = () => socket.emit(EVENTS.enterQueue);
+
+export const emitMatch = () => socket.emit(EVENTS.match);
+
+export const emitLeaveQueue = () => socket.emit(EVENTS.leaveQueue);
 
 export const emitIsTyping = () => socket.emit(EVENTS.isTyping);
 
