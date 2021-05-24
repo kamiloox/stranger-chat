@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from './Message.module.scss';
+import styles from '../styles/ChatMessage.module.scss';
 import PropTypes from 'prop-types';
-import Paragraph from '../Paragraph/Paragraph';
+import Paragraph from './Paragraph';
 
-const Message = ({ children, received, date }) => (
+const ChatMessage = ({ children, received, date }) => (
   <div
     className={`${styles.wrapper} ${received ? styles.received : ''}`}
     title={new Date(date).toDateString()}
@@ -12,14 +12,14 @@ const Message = ({ children, received, date }) => (
   </div>
 );
 
-Message.propTypes = {
+ChatMessage.propTypes = {
   children: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   received: PropTypes.bool,
 };
 
-Message.defaultProps = {
+ChatMessage.defaultProps = {
   received: false,
 };
 
-export default Message;
+export default ChatMessage;

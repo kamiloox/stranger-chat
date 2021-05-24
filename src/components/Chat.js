@@ -11,7 +11,7 @@ import {
   onLeaveChat,
   offMessageReceived,
 } from '../api/events';
-import Message from './Message/Message';
+import Message from './ChatMessage';
 
 const isEmpty = (value) => value.length === 0;
 
