@@ -14,7 +14,7 @@ const ChatMessage = ({ children, received, date }) => (
 
 ChatMessage.propTypes = {
   children: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  date: PropTypes.number.isRequired,
   received: PropTypes.bool,
 };
 

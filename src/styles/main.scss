@@ -25,9 +25,15 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 html {
   font-family: 'Montserrat', sans-serif;
-  font-size: 62.5%;
+  font-size: 56.25%;
 }
 
 body {

@@ -1,0 +1,28 @@
+.wrapper {
+  display: flex;
+  background-color: var(--color-primary);
+  padding: 15px 20px;
+}
+
+.textarea {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  margin: 0;
+  font-family: inherit;
+  font-size: var(--font-m);
+  color: var(--color-text);
+  overflow-y: auto;
+  height: calc(var(--font-m) * 2);
+  box-sizing: border-box;
+  height: 32px;
+  border-bottom: 7px solid transparent; // Simulates margin due to problems across browsers
+  padding: 6px 15px 0;
+  background-color: var(--color-secondary);
+  border-radius: 20px;
+
+  &:focus {
+    box-shadow: 0 0 0 2px lightsteelblue;
+  }
+}

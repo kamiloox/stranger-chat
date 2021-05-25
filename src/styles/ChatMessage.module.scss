@@ -1,13 +1,23 @@
 .wrapper {
   background-color: var(--color-secondary);
-  margin: 5px 10px;
+  margin: 6px 10px;
   padding: 2px 5px;
-  border-radius: 10px 10px 0 10px;
-  align-self: flex-end;
+  border-radius: 10px 10px 10px 0;
+
+  align-self: flex-start;
+
+  &:last-child {
+    border-bottom: 6px solid var(--color-body); // Simulates margin due to problems across browsers
+    border-bottom-right-radius: 13px;
+  }
 }
 
 .received {
   background-color: var(--color-primary);
-  border-radius: 10px 10px 10px 0;
-  align-self: flex-start;
+  border-radius: 10px 10px 0;
+  align-self: flex-end;
+
+  &:last-child {
+    border-bottom-left-radius: 13px;
+  }
 }

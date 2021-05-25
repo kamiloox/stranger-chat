@@ -2,29 +2,31 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   onMessageReceived,
-  emitMessageSend,
   onIsTyping,
-  emitIsTyping,
-  emitLeaveChat,
   offLeaveChat,
   offIsTyping,
   onLeaveChat,
   offMessageReceived,
 } from '../api/events';
-import Message from './ChatMessage';
-
-const isEmpty = (value) => value.length === 0;
+import styles from '../styles/Chat.module.scss';
+import ChatMessage from './ChatMessage';
+import ChatHeader from './ChatHeader';
+import ChatFooter from './ChatFooter';
 
 const Chat = ({ stranger, setStranger }) => {
-  const [currentMessage, setCurrentMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const inputRef = useRef(null);
+  const messagesRef = useRef(null);
 
   useEffect(() => {
     onMessageReceived((newMessage) => {
       setIsTyping(false);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+      // Scroll to last message
+      messagesRef.current
+        .querySelector('div[title]:last-child')
+        .scrollIntoView({ behavior: 'smooth', block: 'end' });
     });
 
     onLeaveChat(() => setStranger(null));
@@ -43,49 +45,25 @@ const Chat = ({ stranger, setStranger }) => {
     };
   }, [setMessages, setStranger]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!isEmpty(currentMessage)) {
-      emitMessageSend(currentMessage);
-      setCurrentMessage('');
-      inputRef.current.focus();
-    }
-  };
-
-  const handleInputChange = (e) => {
-    emitIsTyping();
-    setCurrentMessage(e.target.value);
-  };
-
   return (
-    <>
-      <button onClick={() => emitLeaveChat(stranger)}>Leave chat</button>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '90vh' }}>
-        <div style={{ flexGrow: '1', height: '100%', display: 'flex', flexDirection: 'column' }}>
-          {messages.map(({ date, content, receiver }) => (
-            <Message received={receiver === stranger} key={date}>
-              {content}
-            </Message>
-          ))}
-        </div>
-        {isTyping && <span>typing...</span>}
-        <form onSubmit={handleSubmit}>
-          <input onChange={handleInputChange} value={currentMessage} ref={inputRef} />
-          <button type="submit">&rarr;</button>
-        </form>
+    <div className={styles.wrapper}>
+      <ChatHeader stranger={stranger} />
+      <div className={styles.messagesWrapper} ref={messagesRef}>
+        {messages.map(({ date, content, receiver }) => (
+          <ChatMessage received={receiver === stranger} key={date} date={date}>
+            {content}
+          </ChatMessage>
+        ))}
       </div>
-    </>
+      {isTyping && <span>typing...</span>}
+      <ChatFooter />
+    </div>
   );
 };
 
 Chat.propTypes = {
-  stranger: PropTypes.string,
+  stranger: PropTypes.string.isRequired,
   setStranger: PropTypes.func.isRequired,
-};
-
-Chat.defaultProps = {
-  stranger: null,
 };
 
 export default Chat;
