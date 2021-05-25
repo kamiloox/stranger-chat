@@ -1,5 +1,7 @@
 .paragraph {
   font-size: var(--font-m);
   font-weight: var(--font-regular);
+  white-space: pre-wrap;
+  word-wrap: break-word;
   margin: 6px;
 }

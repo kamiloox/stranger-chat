@@ -49,8 +49,8 @@ const Chat = ({ stranger, setStranger }) => {
     <div className={styles.wrapper}>
       <ChatHeader stranger={stranger} />
       <div className={styles.messagesWrapper} ref={messagesRef}>
-        {messages.map(({ date, content, receiver }) => (
-          <ChatMessage received={receiver === stranger} key={date} date={date}>
+        {messages.map(({ date, content, author }) => (
+          <ChatMessage received={author === stranger} key={date} date={date}>
             {content}
           </ChatMessage>
         ))}

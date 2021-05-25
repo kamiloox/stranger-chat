@@ -11,9 +11,11 @@ const resetTextareaHeight = (current) => {
 const updateTextareaHeight = (current) => {
   if (!current) return;
 
-  resetTextareaHeight();
+  resetTextareaHeight(current);
+
   const BORDER_BOTTOM = 7;
-  current.style.height = `${current.scrollHeight + BORDER_BOTTOM}px`;
+  const newHeight = current.scrollHeight + BORDER_BOTTOM;
+  current.style.height = `${newHeight}px`;
 };
 
 const ChatFooter = () => {
@@ -22,13 +24,12 @@ const ChatFooter = () => {
 
   useEffect(() => {
     messageRef.current.focus();
-    updateTextareaHeight(messageRef.current);
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!isEmpty(currentMessage.trim())) {
+    if (!isEmpty(currentMessage)) {
       emitMessageSend(currentMessage);
       resetTextareaHeight(messageRef.current);
       setCurrentMessage('');
@@ -39,13 +40,12 @@ const ChatFooter = () => {
   const handleMessageChange = (e) => {
     emitIsTyping();
     setCurrentMessage(e.target.value);
-    updateTextareaHeight(messageRef.current);
   };
 
   const handleEnter = (e) => {
     const ENTER_KEY = 'Enter';
 
-    if (e.shiftKey && e.key === ENTER_KEY) return e.preventDefault();
+    if (e.shiftKey && e.key === ENTER_KEY) return;
 
     if (e.key === ENTER_KEY) {
       e.preventDefault();
@@ -56,9 +56,11 @@ const ChatFooter = () => {
   return (
     <form onSubmit={handleSubmit} className={styles.wrapper}>
       <textarea
-        onKeyPress={handleEnter}
+        onKeyDown={handleEnter}
+        onInput={() => updateTextareaHeight(messageRef.current)}
         onChange={handleMessageChange}
         value={currentMessage}
+        autoComplete="off"
         placeholder="Napisz wiadomosc..."
         ref={messageRef}
         className={styles.textarea}

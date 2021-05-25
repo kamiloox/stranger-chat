@@ -5,6 +5,7 @@
 }
 
 .textarea {
+  display: block;
   flex: 1;
   resize: none;
   border: none;
@@ -17,6 +18,7 @@
   height: calc(var(--font-m) * 2);
   box-sizing: border-box;
   height: 32px;
+  max-height: 160px;
   border-bottom: 7px solid transparent; // Simulates margin due to problems across browsers
   padding: 6px 15px 0;
   background-color: var(--color-secondary);
