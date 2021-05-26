@@ -6,6 +6,19 @@
   background-color: var(--color-primary);
 }
 
+.button {
+  background-color: transparent;
+  text-align: center;
+  border: none;
+  transform: translateY(1px);
+
+  &:focus {
+    cursor: pointer;
+  }
+}
+
 .icon {
-  margin-right: 8px;
+  & path {
+    fill: var(--color-text);
+  }
 }

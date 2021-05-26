@@ -1,19 +1,15 @@
 import React from 'react';
 import styles from '../styles/ChatHeader.module.scss';
-import exitIcon from '../assets/exitIcon.svg';
+import { ReactComponent as ExitIcon } from '../assets/exitIcon.svg';
 import PropTypes from 'prop-types';
 import { emitLeaveChat } from '../api/events';
 import Paragraph from './Paragraph';
 
 const ChatHeader = ({ stranger }) => (
   <header className={styles.wrapper}>
-    <input
-      type="image"
-      src={exitIcon}
-      alt="Wyjdź z czatu"
-      className={styles.icon}
-      onClick={() => emitLeaveChat(stranger)}
-    />
+    <button onClick={() => emitLeaveChat(stranger)} className={styles.button}>
+      <ExitIcon className={styles.icon} />
+    </button>
     <Paragraph>Nieznajomy</Paragraph>
   </header>
 );

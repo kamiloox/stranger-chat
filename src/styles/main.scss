@@ -5,7 +5,7 @@
   --color-text: #000000;
   --color-primary: #e6e1d6;
   --color-secondary: #d4cec4;
-  --color-tertiary: #252422;
+  --color-tertiary: ##808080;
 
   --font-xs: 1.2rem;
   --font-s: 1.4rem;
@@ -17,6 +17,16 @@
   --font-light: 300;
   --font-regular: 500;
   --font-bold: 700;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-body: #222222;
+    --color-text: #fffcf2;
+    --color-primary: #353535;
+    --color-secondary: #4b4944;
+    --color-tertiary: #d3d3d3;
+  }
 }
 
 *,
@@ -39,6 +49,8 @@ html {
 }
 
 body {
+  background-color: var(--color-body);
+  color: var(--color-text);
   font-size: 16px;
   margin: 0;
 }

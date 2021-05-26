@@ -25,6 +25,11 @@
   border-radius: 20px;
 
   &:focus {
-    box-shadow: 0 0 0 2px lightsteelblue;
+    box-shadow: 0 0 0 1px lightsteelblue;
+  }
+
+  &::placeholder {
+    opacity: 0.7;
+    color: var(--color-tertiary);
   }
 }
