@@ -8,7 +8,11 @@
 .messagesWrapper {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   flex: 1;
   overflow-y: auto;
+
+  &:first-child {
+    // Workaround; Works as justify-content: flex-end; but with working scroll
+    margin-top: auto !important;
+  }
 }

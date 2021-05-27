@@ -6,18 +6,18 @@ import Paragraph from './Paragraph';
 const ChatMessage = ({ children, received, date, detected }) => {
   let message = children.trim();
 
-  if (detected?.links) {
-    message = message.split(' ').map((text) => {
-      const { links } = detected;
+  const { links } = detected;
+  if (links) {
+    message = message.split(' ').map((text, i) => {
       if (!links.includes(text)) return text + ' ';
 
       const link = links[links.indexOf(text)];
       return (
-        <>
+        <React.Fragment key={i}>
           <a href={link} target="_blank" rel="noreferrer" className={styles.link}>
             {link}
           </a>{' '}
-        </>
+        </React.Fragment>
       );
     });
   }
