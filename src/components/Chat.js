@@ -12,6 +12,7 @@ import styles from '../styles/Chat.module.scss';
 import ChatMessage from './ChatMessage';
 import ChatHeader from './ChatHeader';
 import ChatFooter from './ChatFooter';
+import TypingIndicator from './TypingIndicator';
 
 const Chat = ({ stranger, setStranger }) => {
   const [messages, setMessages] = useState([]);
@@ -22,11 +23,6 @@ const Chat = ({ stranger, setStranger }) => {
     onMessageReceived((newMessage) => {
       setIsTyping(false);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-
-      // Scroll to last message
-      messagesRef.current
-        .querySelector('div[title]:last-child')
-        .scrollIntoView({ behavior: 'smooth', block: 'end' });
     });
 
     onLeaveChat(() => setStranger(null));
@@ -54,8 +50,8 @@ const Chat = ({ stranger, setStranger }) => {
             {content}
           </ChatMessage>
         ))}
+        {isTyping && <TypingIndicator />}
       </div>
-      {isTyping && <span>typing...</span>}
       <ChatFooter />
     </div>
   );
