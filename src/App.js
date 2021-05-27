@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Chat from './components/Chat';
-import {
-  emitEnterQueue,
-  emitMatch,
-  onStrangerFound,
-  offStrangerFound,
-  emitLeaveQueue,
-} from './api/events';
+import { emitMatch, onStrangerFound, offStrangerFound, emitStopMatch } from './api/events';
 
 const App = () => {
   const [stranger, setStranger] = useState(null);
@@ -26,17 +20,14 @@ const App = () => {
     };
   }, [setStranger]);
 
-  const handleEnterQueue = () => {
+  const handleMatch = () => {
     setIsSearching(true);
-    emitEnterQueue();
-    matchInterval = setInterval(() => {
-      emitMatch();
-    }, 1000);
+    emitMatch();
   };
 
-  const handleLeaveQueue = () => {
+  const handleStopMatch = () => {
     clearInterval(matchInterval);
-    emitLeaveQueue();
+    emitStopMatch();
     setIsSearching(false);
   };
 
@@ -44,12 +35,12 @@ const App = () => {
     return (
       <>
         <p>Searching...</p>
-        <button onClick={handleLeaveQueue}>Stop searching</button>
+        <button onClick={handleStopMatch}>Stop searching</button>
       </>
     );
   }
 
-  if (!stranger) return <button onClick={handleEnterQueue}>Find stranger</button>;
+  if (!stranger) return <button onClick={handleMatch}>Find stranger</button>;
 
   return <Chat stranger={stranger} setStranger={setStranger} />;
 };

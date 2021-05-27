@@ -1,24 +1,22 @@
 import { io } from 'socket.io-client';
 
-const ENDPOINT = 'kd-alfa.herokuapp.com';
+const ENDPOINT = 'kd-delta.herokuapp.com';
 
 const EVENTS = {
-  enterQueue: 'enter_queue',
-  leaveQueue: 'leave_queue',
   match: 'match',
+  stopMatch: 'stop_match',
   isTyping: 'is_typing',
-  sendMessage: 'send_message',
+  sendMessage: 'message',
   leaveChat: 'leave_chat',
 };
 
 export const socket = io(ENDPOINT);
 
 // Emitters
-export const emitEnterQueue = () => socket.emit(EVENTS.enterQueue);
 
 export const emitMatch = () => socket.emit(EVENTS.match);
 
-export const emitLeaveQueue = () => socket.emit(EVENTS.leaveQueue);
+export const emitStopMatch = () => socket.emit(EVENTS.stopMatch);
 
 export const emitIsTyping = () => socket.emit(EVENTS.isTyping);
 
