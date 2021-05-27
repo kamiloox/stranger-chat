@@ -24,3 +24,13 @@ $marginBottom: 5px;
     border-bottom-right-radius: 16px;
   }
 }
+
+.link {
+  text-decoration: none;
+  color: var(--color-link);
+
+  &:hover,
+  &:active {
+    text-decoration: underline;
+  }
+}
