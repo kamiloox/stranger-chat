@@ -6,6 +6,10 @@ const App = () => {
   const [stranger, setStranger] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
 
+  useEffect(() => {
+    document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+  }, []);
+
   let matchInterval;
   useEffect(() => {
     onStrangerFound((data) => {

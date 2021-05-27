@@ -17,12 +17,19 @@ import TypingIndicator from './TypingIndicator';
 const Chat = ({ stranger, setStranger }) => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+
   const messagesRef = useRef(null);
 
   useEffect(() => {
     onMessageReceived((newMessage) => {
       setIsTyping(false);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+      const { current } = messagesRef;
+      const isScrolledToBottom =
+        current.scrollHeight - (current.scrollTop + current.getBoundingClientRect().height) < 100;
+      if (newMessage.initializer !== stranger || isScrolledToBottom)
+        current.scrollTop = current.scrollHeight;
     });
 
     onLeaveChat(() => setStranger(null));
@@ -39,12 +46,13 @@ const Chat = ({ stranger, setStranger }) => {
       offMessageReceived();
       offLeaveChat();
     };
-  }, [setMessages, setStranger]);
+  }, [setMessages, setStranger, stranger]);
 
   return (
     <div className={styles.wrapper}>
       <ChatHeader stranger={stranger} />
       <div className={styles.messagesWrapper} ref={messagesRef}>
+        <div className={styles.fix}></div>
         {messages.map(({ date, content, initializer, detected }) => (
           <ChatMessage
             received={initializer === stranger}

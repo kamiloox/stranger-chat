@@ -10,9 +10,9 @@
   flex-direction: column;
   flex: 1;
   overflow-y: auto;
+}
 
-  &:first-child {
-    // Workaround; Works as justify-content: flex-end; but with working scroll
-    margin-top: auto !important;
-  }
+// Workaround; Works as justify-content: flex-end; but with working scroll
+.fix {
+  flex: 1 1 auto;
 }
