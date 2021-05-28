@@ -8,6 +8,7 @@ const EVENTS = {
   isTyping: 'is_typing',
   sendMessage: 'message',
   leaveChat: 'leave_chat',
+  warning: 'warning',
 };
 
 export const socket = io(ENDPOINT);
@@ -33,6 +34,8 @@ export const onLeaveChat = (callback) => socket.on(EVENTS.leaveChat, callback);
 
 export const onMessageReceived = (callback) => socket.on(EVENTS.sendMessage, callback);
 
+export const onWarning = (callback) => socket.on(EVENTS.warning, callback);
+
 // Unsubscribers
 export const offIsTyping = () => socket.off(EVENTS.isTyping);
 
@@ -41,3 +44,5 @@ export const offStrangerFound = () => socket.off(EVENTS.match);
 export const offLeaveChat = () => socket.off(EVENTS.leaveChat);
 
 export const offMessageReceived = () => socket.off(EVENTS.sendMessage);
+
+export const offWarning = (callback) => socket.on(EVENTS.warning, callback);

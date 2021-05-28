@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import Chat from './components/Chat';
-import { emitMatch, onStrangerFound, offStrangerFound, emitStopMatch } from './api/events';
+import {
+  emitMatch,
+  onStrangerFound,
+  offStrangerFound,
+  emitStopMatch,
+  onWarning,
+} from './api/events';
 
 const App = () => {
   const [stranger, setStranger] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
 
-  useEffect(() => {
-    document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-  }, []);
-
   let matchInterval;
   useEffect(() => {
+    onWarning((data) => console.log(data));
+
     onStrangerFound((data) => {
       if (!data) return;
 
