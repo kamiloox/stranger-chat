@@ -1,31 +1,43 @@
 $marginBottom: 5px;
 
 .wrapper {
-  max-width: 55%;
+  max-width: 75%;
+  align-self: flex-end;
+}
+
+.item {
+  position: relative;
   background-color: var(--color-primary);
   margin: $marginBottom 10px 0;
   padding: 2px 5px;
   border-radius: 10px 10px 0;
-  align-self: flex-end;
 
   &:last-child {
     border-bottom: $marginBottom solid var(--color-body); // Simulates margin due to problems across browsers
     border-bottom-left-radius: 16px;
   }
-}
 
-.received {
-  background-color: var(--color-secondary);
-  border-radius: 10px 10px 10px 0;
-  align-self: flex-start;
-
-  &:last-child {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 16px;
+  &:not(:first-child) {
+    // Links background color
+    background-color: var(--color-link-background);
   }
 }
 
-.link {
+.received {
+  align-self: flex-start;
+  & > * {
+    background-color: var(--color-secondary);
+    border-radius: 10px 10px 10px 0;
+    padding: 2px 5px;
+
+    &:last-child {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 16px;
+    }
+  }
+}
+
+.linkInMessage {
   text-decoration: none;
   color: var(--color-link);
 
@@ -33,4 +45,38 @@ $marginBottom: 5px;
   &:active {
     text-decoration: underline;
   }
+}
+
+.linkWrapper {
+  padding: 8px 12px;
+  a {
+    display: flex;
+    flex-direction: column;
+
+    color: white;
+    text-decoration: none;
+    font-size: var(--font-xs);
+  }
+}
+
+.linkImg {
+  width: 50px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.linkTitle {
+  display: block;
+  color: var(--color-text);
+  margin-right: 60px;
+  text-decoration: none;
+  font-size: var(--font-s);
+  font-weight: var(--font-bold);
+}
+
+.linkDescription {
+  margin-top: 5px;
+  margin-right: 60px;
+  color: darkgray;
 }

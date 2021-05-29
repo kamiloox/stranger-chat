@@ -7,27 +7,36 @@ const ChatMessage = ({ children, received, date, detected }) => {
   let message = children.trim();
 
   const { links } = detected;
-  if (links) {
+  if (!!links.length) {
     message = message.split(' ').map((text, i) => {
-      if (!links.includes(text)) return text + ' ';
+      const link = links.find(({ src }) => src === text);
+      if (!link) return text + ' ';
 
-      const link = links[links.indexOf(text)];
       return (
         <React.Fragment key={i}>
-          <a href={link} target="_blank" rel="noreferrer" className={styles.link}>
-            {link}
-          </a>{' '}
+          <a href={link.src} target="_blank" rel="noreferrer" className={styles.linkInMessage}>
+            {link.src}
+          </a>
         </React.Fragment>
       );
     });
   }
 
   return (
-    <div
-      className={`${styles.wrapper} ${received ? styles.received : ''}`}
-      title={new Date(date).toDateString()}
-    >
-      <Paragraph>{message}</Paragraph>
+    <div className={`${styles.wrapper} ${received ? styles.received : ''}`}>
+      <div title={new Date(date).toDateString()} className={styles.item}>
+        <Paragraph>{message}</Paragraph>
+      </div>
+      {!!links.length &&
+        links.map(({ title, src, img, description }, i) => (
+          <div className={`${styles.item} ${styles.linkWrapper}`}>
+            <a key={i} href={src} target="_blank" rel="noreferrer">
+              {title && <span className={styles.linkTitle}>{title}</span>}
+              {img && <img src={img} className={styles.linkImg} alt="Logo strony z linku" />}
+              {description && <span className={styles.linkDescription}>{description}</span>}
+            </a>
+          </div>
+        ))}
     </div>
   );
 };
