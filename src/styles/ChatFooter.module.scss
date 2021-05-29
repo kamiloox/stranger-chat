@@ -1,7 +1,45 @@
+$paddingHorizontal: 20px;
+$paddingVertical: 15px;
+
 .wrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
   background-color: var(--color-primary);
   padding: 15px 20px;
+  min-height: 68px;
+
+  & > button:last-child {
+    padding: 0 0 0 7px;
+  }
+
+  & > button {
+    display: none;
+  }
+}
+
+.expanded {
+  grid-template-columns: auto 1fr auto;
+
+  & div {
+    display: none;
+  }
+
+  & > button {
+    display: block;
+  }
+}
+
+.icon {
+  & path {
+    fill: var(--color-text);
+  }
+}
+
+.actionButtons {
+  & button {
+    padding: 0 6px;
+  }
 }
 
 .textarea {

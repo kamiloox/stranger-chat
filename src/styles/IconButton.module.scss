@@ -1,0 +1,14 @@
+.button {
+  background-color: transparent;
+  border: none;
+
+  &:active path {
+    transition: fill 0.2s;
+    fill: steelblue;
+  }
+
+  &:hover,
+  &:active {
+    cursor: pointer;
+  }
+}

@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from '../styles/ChatFooter.module.scss';
 import { emitMessageSend, emitIsTyping } from '../api/events';
+import { ReactComponent as ArrowIcon } from '../assets/arrowIcon.svg';
+import { ReactComponent as EmojiIcon } from '../assets/emojiIcon.svg';
+import { ReactComponent as GifIcon } from '../assets/gifIcon.svg';
+import { ReactComponent as SendIcon } from '../assets/sendIcon.svg';
+import IconButton from './IconButton';
 
 const isEmpty = (value) => value.length === 0;
 
@@ -20,10 +25,15 @@ const updateTextareaHeight = (current) => {
 
 const ChatFooter = () => {
   const [currentMessage, setCurrentMessage] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
   const messageRef = useRef(null);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     messageRef.current.focus();
+    [...wrapperRef.current.querySelectorAll('button')].forEach((button) => {
+      button.addEventListener('click', () => messageRef.current.focus());
+    });
   }, []);
 
   const handleSubmit = (e) => {
@@ -32,14 +42,23 @@ const ChatFooter = () => {
     if (!isEmpty(currentMessage)) {
       emitMessageSend(currentMessage);
       resetTextareaHeight(messageRef.current);
+      setIsExpanded(false);
       setCurrentMessage('');
       e.target.focus();
     }
   };
 
   const handleMessageChange = (e) => {
+    const { value } = e.target;
+    if (value.length === 0) {
+      setIsExpanded(false);
+    } else {
+      setIsExpanded(true);
+    }
+
+    updateTextareaHeight(messageRef.current);
     emitIsTyping();
-    setCurrentMessage(e.target.value);
+    setCurrentMessage(value);
   };
 
   const handleEnter = (e) => {
@@ -54,7 +73,22 @@ const ChatFooter = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.wrapper}>
+    <div
+      onSubmit={handleSubmit}
+      className={`${styles.wrapper} ${isExpanded ? styles.expanded : ''}`}
+      ref={wrapperRef}
+    >
+      <IconButton>
+        <ArrowIcon className={styles.icon} onClick={() => setIsExpanded(false)} />
+      </IconButton>
+      <div className={styles.actionButtons}>
+        <IconButton>
+          <EmojiIcon className={styles.icon} />
+        </IconButton>
+        <IconButton>
+          <GifIcon className={styles.icon} />
+        </IconButton>
+      </div>
       <textarea
         onKeyDown={handleEnter}
         onInput={() => updateTextareaHeight(messageRef.current)}
@@ -65,7 +99,10 @@ const ChatFooter = () => {
         ref={messageRef}
         className={styles.textarea}
       />
-    </form>
+      <IconButton>
+        <SendIcon className={styles.icon} onClick={handleSubmit} />
+      </IconButton>
+    </div>
   );
 };
 
