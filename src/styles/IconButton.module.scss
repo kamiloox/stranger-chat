@@ -2,6 +2,10 @@
   background-color: transparent;
   border: none;
 
+  & path {
+    fill: var(--color-text);
+  }
+
   &:active path {
     transition: fill 0.2s;
     fill: steelblue;

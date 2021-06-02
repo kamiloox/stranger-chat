@@ -22,6 +22,7 @@ const Chat = ({ stranger, setStranger }) => {
 
   useEffect(() => {
     onMessageReceived((newMessage) => {
+      console.log(newMessage);
       setIsTyping(false);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
 

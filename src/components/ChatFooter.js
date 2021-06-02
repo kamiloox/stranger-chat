@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, createRef } from 'react';
 import styles from '../styles/ChatFooter.module.scss';
 import { emitMessageSend, emitIsTyping } from '../api/events';
 import { ReactComponent as ArrowIcon } from '../assets/arrowIcon.svg';
@@ -6,43 +6,25 @@ import { ReactComponent as EmojiIcon } from '../assets/emojiIcon.svg';
 import { ReactComponent as GifIcon } from '../assets/gifIcon.svg';
 import { ReactComponent as SendIcon } from '../assets/sendIcon.svg';
 import IconButton from './IconButton';
+import Giphy from './Giphy';
+import TextInput from './TextInput';
 
 const isEmpty = (value) => value.length === 0;
-
-const resetTextareaHeight = (current) => {
-  if (current) current.style.height = '32px';
-};
-
-const updateTextareaHeight = (current) => {
-  if (!current) return;
-
-  resetTextareaHeight(current);
-
-  const BORDER_BOTTOM = 7;
-  const newHeight = current.scrollHeight + BORDER_BOTTOM;
-  current.style.height = `${newHeight}px`;
-};
 
 const ChatFooter = () => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
-  const messageRef = useRef(null);
+  const [giphy, setGiphy] = useState(false);
   const wrapperRef = useRef(null);
-
-  useEffect(() => {
-    messageRef.current.focus();
-    [...wrapperRef.current.querySelectorAll('button')].forEach((button) => {
-      button.addEventListener('click', () => messageRef.current.focus());
-    });
-  }, []);
+  const inputRef = createRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!isEmpty(currentMessage)) {
       emitMessageSend(currentMessage);
-      resetTextareaHeight(messageRef.current);
       setIsExpanded(false);
+      setGiphy({ ...giphy, visible: false });
       setCurrentMessage('');
       e.target.focus();
     }
@@ -50,54 +32,46 @@ const ChatFooter = () => {
 
   const handleMessageChange = (e) => {
     const { value } = e.target;
+    if (giphy?.visible) return setCurrentMessage(value);
+
     if (value.length === 0) {
       setIsExpanded(false);
     } else {
       setIsExpanded(true);
     }
 
-    updateTextareaHeight(messageRef.current);
     emitIsTyping();
     setCurrentMessage(value);
   };
 
-  const handleEnter = (e) => {
-    const ENTER_KEY = 'Enter';
-
-    if (e.shiftKey && e.key === ENTER_KEY) return;
-
-    if (e.key === ENTER_KEY) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
+  if (giphy?.visible) {
+    return (
+      <div className={`${styles.wrapper} ${styles.actionWrapper}`}>
+        <Giphy padding={20} setIsVisible={setGiphy} type={giphy.type} />
+      </div>
+    );
+  }
 
   return (
-    <div
-      onSubmit={handleSubmit}
-      className={`${styles.wrapper} ${isExpanded ? styles.expanded : ''}`}
-      ref={wrapperRef}
-    >
-      <IconButton>
-        <ArrowIcon className={styles.icon} onClick={() => setIsExpanded(false)} />
+    <div className={`${styles.wrapper} ${isExpanded ? styles.expanded : ''}`} ref={wrapperRef}>
+      <IconButton onClick={() => setIsExpanded(false)}>
+        <ArrowIcon />
       </IconButton>
       <div className={styles.actionButtons}>
-        <IconButton>
-          <EmojiIcon className={styles.icon} />
+        <IconButton onClick={() => setGiphy({ visible: true, type: 'animatedText' })}>
+          <EmojiIcon />
         </IconButton>
-        <IconButton>
-          <GifIcon className={styles.icon} />
+        <IconButton onClick={() => setGiphy({ visible: true, type: 'gif' })}>
+          <GifIcon />
         </IconButton>
       </div>
-      <textarea
-        onKeyDown={handleEnter}
-        onInput={() => updateTextareaHeight(messageRef.current)}
+      <TextInput
+        onSubmit={handleSubmit}
         onChange={handleMessageChange}
         value={currentMessage}
-        autoComplete="off"
-        placeholder="Napisz wiadomosc..."
-        ref={messageRef}
-        className={styles.textarea}
+        placeholder="Napisz wiadomość..."
+        autoCorrect="off"
+        ref={inputRef}
       />
       <IconButton>
         <SendIcon className={styles.icon} onClick={handleSubmit} />
