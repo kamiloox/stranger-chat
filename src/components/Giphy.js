@@ -6,7 +6,7 @@ import styles from '../styles/Giphy.module.scss';
 import { ReactComponent as CloseIcon } from '../assets/closeIcon.svg';
 import { emitMessageSend } from '../api/events';
 import TextInput from './TextInput';
-import IconButton from './IconButton';
+import Button from './Button';
 import { GiphyContext, GiphyProvider } from '../context/GiphyContext';
 
 const giphyFetch = new GiphyFetch(process.env.REACT_APP_GIPHY_KEY);
@@ -77,9 +77,9 @@ const Components = ({ setIsVisible, padding, type }) => {
         hideAttribution
       />
       <div className={styles.searchFooter}>
-        <IconButton onClick={() => setIsVisible({ type, visible: false })}>
+        <Button type="icon" onClick={() => setIsVisible({ type, visible: false })}>
           <CloseIcon />
-        </IconButton>
+        </Button>
         <TextInput
           onChange={(e) => setSearchKey(e.target.value)}
           onBlur={() => setIsVisible({ type, visible: false })}

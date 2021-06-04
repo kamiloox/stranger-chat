@@ -5,7 +5,7 @@ import { ReactComponent as ArrowIcon } from '../assets/arrowIcon.svg';
 import { ReactComponent as EmojiIcon } from '../assets/emojiIcon.svg';
 import { ReactComponent as GifIcon } from '../assets/gifIcon.svg';
 import { ReactComponent as SendIcon } from '../assets/sendIcon.svg';
-import IconButton from './IconButton';
+import Button from './Button';
 import Giphy from './Giphy';
 import TextInput from './TextInput';
 
@@ -54,16 +54,16 @@ const ChatFooter = () => {
 
   return (
     <div className={`${styles.wrapper} ${isExpanded ? styles.expanded : ''}`} ref={wrapperRef}>
-      <IconButton onClick={() => setIsExpanded(false)}>
+      <Button type="icon" onClick={() => setIsExpanded(false)}>
         <ArrowIcon />
-      </IconButton>
+      </Button>
       <div className={styles.actionButtons}>
-        <IconButton onClick={() => setGiphy({ visible: true, type: 'animatedText' })}>
+        <Button type="icon" onClick={() => setGiphy({ visible: true, type: 'animatedText' })}>
           <EmojiIcon />
-        </IconButton>
-        <IconButton onClick={() => setGiphy({ visible: true, type: 'gif' })}>
+        </Button>
+        <Button type="icon" onClick={() => setGiphy({ visible: true, type: 'gif' })}>
           <GifIcon />
-        </IconButton>
+        </Button>
       </div>
       <TextInput
         onSubmit={handleSubmit}
@@ -73,9 +73,9 @@ const ChatFooter = () => {
         autoCorrect="off"
         ref={inputRef}
       />
-      <IconButton>
+      <Button type="icon">
         <SendIcon className={styles.icon} onClick={handleSubmit} />
-      </IconButton>
+      </Button>
     </div>
   );
 };

@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import Chat from './components/Chat';
+import Chat from '../components/Chat';
+import Button from '../components/Button';
 import {
   emitMatch,
   onStrangerFound,
   offStrangerFound,
   emitStopMatch,
   onWarning,
-} from './api/events';
+} from '../api/events';
 
-const App = () => {
+const ChatView = () => {
   const [stranger, setStranger] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
 
+  const handleMatch = () => {
+    setIsSearching(true);
+    emitMatch();
+  };
+
   let matchInterval;
   useEffect(() => {
+    handleMatch();
+
     onWarning((data) => console.log(data));
 
     onStrangerFound((data) => {
@@ -28,11 +36,6 @@ const App = () => {
     };
   }, [setStranger]);
 
-  const handleMatch = () => {
-    setIsSearching(true);
-    emitMatch();
-  };
-
   const handleStopMatch = () => {
     clearInterval(matchInterval);
     emitStopMatch();
@@ -42,15 +45,15 @@ const App = () => {
   if (isSearching) {
     return (
       <>
-        <p>Searching...</p>
-        <button onClick={handleStopMatch}>Stop searching</button>
+        <p>Szukam...</p>
+        <Button onClick={handleStopMatch}>Przestań szukać</Button>
       </>
     );
   }
 
-  if (!stranger) return <button onClick={handleMatch}>Find stranger</button>;
+  if (!stranger) return <Button onClick={handleMatch}>Znajdź rozmówcę</Button>;
 
   return <Chat stranger={stranger} setStranger={setStranger} />;
 };
 
-export default App;
+export default ChatView;
