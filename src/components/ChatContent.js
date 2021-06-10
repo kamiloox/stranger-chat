@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styles from '../styles/ChatContent.module.scss';
 import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
+import Loader from './Loader';
 
 const isEmpty = (value) => value.length === 0;
 
@@ -24,7 +25,11 @@ const ChatContent = forwardRef(
       </ChatMessage>
     ));
 
-    const searching = isEmpty(messages) && isSearching && <p>Szukam...</p>;
+    const searching = isEmpty(messages) && isSearching && (
+      <div className={styles.loader}>
+        <Loader />
+      </div>
+    );
 
     return (
       <div className={styles.messagesWrapper} ref={ref}>
