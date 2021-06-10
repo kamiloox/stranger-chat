@@ -7,7 +7,7 @@ $marginBottom: 5px;
 
 .item {
   position: relative;
-  background-color: var(--color-primary);
+  background-color: var(--color-tertiary);
   margin: $marginBottom 10px 0;
   padding: 2px 5px;
   border-radius: 10px 10px 0;
@@ -17,9 +17,12 @@ $marginBottom: 5px;
     border-bottom-left-radius: 16px;
   }
 
-  &:not(:first-child) {
-    // Links background color
-    background-color: var(--color-link-background);
+  & a {
+    color: inherit;
+
+    &:active {
+      background-color: var(--color-primary);
+    }
   }
 }
 
@@ -35,48 +38,4 @@ $marginBottom: 5px;
       border-bottom-right-radius: 16px;
     }
   }
-}
-
-.linkInMessage {
-  text-decoration: none;
-  color: var(--color-link);
-
-  &:hover,
-  &:active {
-    text-decoration: underline;
-  }
-}
-
-.linkWrapper {
-  padding: 8px 12px;
-  a {
-    display: flex;
-    flex-direction: column;
-
-    color: white;
-    text-decoration: none;
-    font-size: var(--font-xs);
-  }
-}
-
-.linkImg {
-  width: 50px;
-  position: absolute;
-  right: 5px;
-  top: 5px;
-}
-
-.linkTitle {
-  display: block;
-  color: var(--color-text);
-  margin-right: 60px;
-  text-decoration: none;
-  font-size: var(--font-s);
-  font-weight: var(--font-bold);
-}
-
-.linkDescription {
-  margin-top: 5px;
-  margin-right: 60px;
-  color: darkgray;
 }

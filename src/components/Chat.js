@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
 import {
   onMessageReceived,
   onIsTyping,
@@ -10,29 +9,19 @@ import {
   offMessageReceived,
   emitLeaveChat,
 } from '../api/events';
+import { ReactComponent as ExitIcon } from '../assets/exitIcon.svg';
 import styles from '../styles/Chat.module.scss';
 import ChatMessage from './ChatMessage';
-import ChatHeader from './ChatHeader';
 import ChatFooter from './ChatFooter';
 import TypingIndicator from './TypingIndicator';
+import Paragraph from './Paragraph';
+import Button from './Button';
 
 const Chat = ({ stranger, setStranger }) => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const history = useHistory();
 
   const messagesWrapperRef = useRef(null);
-
-  useEffect(() => {
-    const unsubscribe = history.listen(() => {
-      const backButton = 'POP';
-      if (history.action === backButton && stranger) {
-        emitLeaveChat(stranger);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [history, stranger]);
 
   useEffect(() => {
     onMessageReceived((newMessage) => {
@@ -57,6 +46,7 @@ const Chat = ({ stranger, setStranger }) => {
     });
 
     return () => {
+      emitLeaveChat(stranger);
       offIsTyping();
       offMessageReceived();
       offLeaveChat();
@@ -65,7 +55,12 @@ const Chat = ({ stranger, setStranger }) => {
 
   return (
     <div className={styles.wrapper}>
-      <ChatHeader stranger={stranger} />
+      <div className={styles.header}>
+        <Button type="icon" onClick={() => emitLeaveChat(stranger)}>
+          <ExitIcon />
+        </Button>
+        <Paragraph>Nieznajomy</Paragraph>
+      </div>
       <div className={styles.messagesWrapper} ref={messagesWrapperRef}>
         <div className={styles.fix}></div>
         {messages.map(({ date, content, initializer, detected }) => (
