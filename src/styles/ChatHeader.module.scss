@@ -1,0 +1,13 @@
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 55px;
+  background-color: var(--color-primary);
+}
+
+.disabled {
+  button {
+    display: none;
+  }
+}

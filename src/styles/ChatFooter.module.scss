@@ -18,6 +18,11 @@ $paddingVertical: 15px;
   }
 }
 
+.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 .expanded {
   grid-template-columns: auto 1fr auto;
 

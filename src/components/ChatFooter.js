@@ -1,4 +1,5 @@
-import React, { useState, useRef, createRef } from 'react';
+import React, { useState, useRef, createRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import styles from '../styles/ChatFooter.module.scss';
 import { emitMessageSend, emitIsTyping } from '../api/events';
 import { ReactComponent as ArrowIcon } from '../assets/arrowIcon.svg';
@@ -11,12 +12,19 @@ import TextInput from './TextInput';
 
 const isEmpty = (value) => value.length === 0;
 
-const ChatFooter = () => {
+const ChatFooter = ({ isDisabled }) => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [giphy, setGiphy] = useState(false);
   const wrapperRef = useRef(null);
   const inputRef = createRef(null);
+
+  useEffect(() => {
+    if (isDisabled) {
+      setCurrentMessage('');
+      setIsExpanded(false);
+    }
+  }, [isDisabled]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -53,7 +61,13 @@ const ChatFooter = () => {
   }
 
   return (
-    <div className={`${styles.wrapper} ${isExpanded ? styles.expanded : ''}`} ref={wrapperRef}>
+    <div
+      className={`
+        ${styles.wrapper} 
+        ${isExpanded ? styles.expanded : ''} 
+        ${isDisabled ? styles.disabled : ''}`}
+      ref={wrapperRef}
+    >
       <Button type="icon" onClick={() => setIsExpanded(false)}>
         <ArrowIcon />
       </Button>
@@ -71,13 +85,22 @@ const ChatFooter = () => {
         value={currentMessage}
         placeholder="Napisz wiadomość..."
         autoCorrect="off"
+        disabled={isDisabled}
         ref={inputRef}
       />
-      <Button type="icon">
-        <SendIcon className={styles.icon} onClick={handleSubmit} />
+      <Button type="icon" onClick={handleSubmit}>
+        <SendIcon className={styles.icon} />
       </Button>
     </div>
   );
+};
+
+ChatFooter.propTypes = {
+  isDisabled: PropTypes.bool,
+};
+
+ChatFooter.defaultProps = {
+  isDisabled: false,
 };
 
 export default ChatFooter;

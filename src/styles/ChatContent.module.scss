@@ -1,0 +1,15 @@
+.messagesWrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+// Workaround; Works as justify-content: flex-end; but with working scroll
+.fixScroll {
+  flex: 1 1 auto;
+}
+
+.children {
+  padding: 10px;
+}
