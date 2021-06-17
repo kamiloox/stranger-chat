@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { emitterTemplate, emitterType } from '../helpers/emitterTemplate';
 
-const ENDPOINT = 'localhost:8080';
+const ENDPOINT = 'kd-delta.herokuapp.com';
 
 const EVENTS = {
   match: 'match',
@@ -11,6 +11,7 @@ const EVENTS = {
   leaveChat: 'leave_chat',
   warning: 'warning',
   question: 'question',
+  userId: 'user_id',
 };
 
 export const socket = io(ENDPOINT);
@@ -23,18 +24,22 @@ export const emitStopMatch = () => socket.emit(EVENTS.stopMatch);
 
 export const emitIsTyping = () => socket.emit(EVENTS.isTyping);
 
+export const emitGetUserId = () => socket.emit(EVENTS.userId);
+
 export const emitAskQuestion = (askedQuestions) =>
   socket.emit(EVENTS.question, emitterTemplate(askedQuestions, emitterType.question));
 
 export const emitMessage = (message, type) =>
   socket.emit(EVENTS.message, emitterTemplate(message, type));
 
-export const emitLeaveChat = (strangerId) => socket.emit(EVENTS.leaveChat, strangerId);
+export const emitLeaveChat = () => socket.emit(EVENTS.leaveChat);
 
 // Handlers
 export const onAskQuestion = (callback) => socket.on(EVENTS.question, callback);
 
 export const onIsTyping = (callback) => socket.on(EVENTS.isTyping, callback);
+
+export const onGetUserId = (callback) => socket.on(EVENTS.userId, callback);
 
 export const onStrangerFound = (callback) => socket.on(EVENTS.match, callback);
 
@@ -48,6 +53,8 @@ export const onWarning = (callback) => socket.on(EVENTS.warning, callback);
 export const offAskQuestion = () => socket.off(EVENTS.question);
 
 export const offIsTyping = () => socket.off(EVENTS.isTyping);
+
+export const offGetUserId = () => socket.off(EVENTS.userId);
 
 export const offStrangerFound = () => socket.off(EVENTS.match);
 

@@ -1,4 +1,4 @@
-import { useContext, useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Grid } from '@giphy/react-components';
 import { GiphyFetch } from '@giphy/js-fetch-api';
 import PropTypes from 'prop-types';
@@ -7,30 +7,30 @@ import { ReactComponent as CloseIcon } from '../assets/closeIcon.svg';
 import { emitMessage } from '../api/events';
 import TextInput from './TextInput';
 import Button from './Button';
-import { GiphyContext, GiphyProvider } from '../context/GiphyContext';
+import { GiphyProvider, useGiphy } from '../context/GiphyContext';
 import { emitterType } from '../helpers/emitterTemplate';
 
 const giphyFetch = new GiphyFetch(process.env.REACT_APP_GIPHY_KEY);
 
-const contentTypes = {
+export const contentTypes = {
   gif: 'gif',
   animatedText: 'animatedText',
 };
 
-const Components = ({ setIsVisible, padding, type }) => {
-  const twoSidedPadding = padding * 2;
-  const [width, setWidth] = useState(window.innerWidth - twoSidedPadding);
+const Components = ({ closeFn, padding, type }) => {
+  const totalPadding = padding * 2;
+  const [width, setWidth] = useState(window.innerWidth - totalPadding);
   const inputRef = useRef(null);
-  const { searchKey, setSearchKey } = useContext(GiphyContext);
+  const { searchKey, setSearchKey } = useGiphy();
   const initialAnimatedText = 'hej';
 
   const contentType = contentTypes[type];
 
   useEffect(() => {
-    const updateWidth = () => setWidth(window.innerWidth - twoSidedPadding);
+    const updateWidth = () => setWidth(window.innerWidth - totalPadding);
     window.addEventListener('resize', updateWidth);
     return () => window.removeEventListener('resize', updateWidth);
-  }, [twoSidedPadding]);
+  }, [totalPadding]);
 
   const fetchItems = (offset) => {
     return new Promise(async (resolve, reject) => {
@@ -61,8 +61,9 @@ const Components = ({ setIsVisible, padding, type }) => {
   };
 
   const handleGifClick = ({ images }) => {
-    emitMessage(images.fixed_width, emitterType.gif);
-    setIsVisible({ type, visible: true });
+    console.log(images);
+    emitMessage(images?.fixed_width?.url, emitterType.gif);
+    closeFn();
   };
 
   return (
@@ -75,15 +76,13 @@ const Components = ({ setIsVisible, padding, type }) => {
         className={styles.grid}
         onGifClick={handleGifClick}
         noLink
-        hideAttribution
       />
       <div className={styles.searchFooter}>
-        <Button type="icon" onClick={() => setIsVisible({ type, visible: false })}>
+        <Button type="icon" onClick={closeFn}>
           <CloseIcon />
         </Button>
         <TextInput
           onChange={(e) => setSearchKey(e.target.value)}
-          onBlur={() => setIsVisible({ type, visible: false })}
           ref={inputRef}
           as="input"
           placeholder="Szukaj gifa"
@@ -93,14 +92,14 @@ const Components = ({ setIsVisible, padding, type }) => {
   );
 };
 
-const Giphy = ({ type, setIsVisible, padding }) => (
+const Giphy = ({ type, closeFn, padding }) => (
   <GiphyProvider>
-    <Components setIsVisible={setIsVisible} padding={padding} type={type} />
+    <Components closeFn={closeFn} padding={padding} type={type} />
   </GiphyProvider>
 );
 
 Giphy.propTypes = {
-  setIsVisible: PropTypes.func.isRequired,
+  closeFn: PropTypes.func.isRequired,
   type: PropTypes.oneOf([contentTypes.animatedText, contentTypes.gif]),
   padding: PropTypes.number,
 };

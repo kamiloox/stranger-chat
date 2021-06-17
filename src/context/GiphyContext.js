@@ -1,6 +1,12 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const GiphyContext = createContext(null);
+
+export const useGiphy = () => {
+  const { searchKey, setSearchKey } = useContext(GiphyContext);
+
+  return { searchKey, setSearchKey };
+};
 
 const GiphyProvider = ({ children }) => {
   const [searchKey, setSearchKey] = useState('');

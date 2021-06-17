@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import styles from '../styles/TextInput.module.scss';
 
 const resetTextareaHeight = (current) => {
-  if (current) current.style.height = '32px';
+  const BASE_HEIGHT = 32;
+  if (current) current.style.height = `${BASE_HEIGHT}px`;
 };
 
+// Update height based on content
 const updateTextareaHeight = (current) => {
   if (!current) return;
 

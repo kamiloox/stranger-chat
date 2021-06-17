@@ -8,7 +8,7 @@ import { ReactComponent as GifIcon } from '../assets/gifIcon.svg';
 import { ReactComponent as SendIcon } from '../assets/sendIcon.svg';
 import { ReactComponent as QuestionIcon } from '../assets/questionIcon.svg';
 import Button from './Button';
-import Giphy from './Giphy';
+import Giphy, { contentTypes as giphyContentTypes } from './Giphy';
 import TextInput from './TextInput';
 
 const isEmpty = (value) => value.length === 0;
@@ -16,7 +16,7 @@ const isEmpty = (value) => value.length === 0;
 const ChatFooter = ({ isDisabled, askedQuestions }) => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
-  const [giphy, setGiphy] = useState(false);
+  const [giphy, setGiphy] = useState({ type: giphyContentTypes.gif, visible: false });
   const [isQuestionDisabled, setIsQuestionDisabled] = useState(false);
   const wrapperRef = useRef(null);
   const inputRef = createRef(null);
@@ -56,8 +56,12 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
 
   if (giphy?.visible) {
     return (
-      <div className={`${styles.wrapper} ${styles.actionWrapper}`}>
-        <Giphy padding={20} setIsVisible={setGiphy} type={giphy.type} />
+      <div className={`${styles.wrapper} ${styles.giphyWrapper}`}>
+        <Giphy
+          padding={20}
+          closeFn={() => setGiphy({ ...giphy, visible: false })}
+          type={giphy?.type}
+        />
       </div>
     );
   }
@@ -70,20 +74,25 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
 
   return (
     <div
-      className={`
-        ${styles.wrapper} 
-        ${isExpanded ? styles.expanded : ''} 
-        ${isDisabled ? styles.disabled : ''}`}
+      className={`${styles.wrapper} ${isExpanded ? styles.expanded : ''} ${
+        isDisabled ? styles.disabled : ''
+      }`}
       ref={wrapperRef}
     >
       <Button type="icon" onClick={() => setIsExpanded(false)}>
         <ArrowIcon />
       </Button>
       <div className={styles.actionButtons}>
-        <Button type="icon" onClick={() => setGiphy({ visible: true, type: 'animatedText' })}>
+        <Button
+          type="icon"
+          onClick={() => setGiphy({ visible: true, type: giphyContentTypes.animatedText })}
+        >
           <EmojiIcon />
         </Button>
-        <Button type="icon" onClick={() => setGiphy({ visible: true, type: 'gif' })}>
+        <Button
+          type="icon"
+          onClick={() => setGiphy({ visible: true, type: giphyContentTypes.gif })}
+        >
           <GifIcon />
         </Button>
         <Button type="icon" onClick={askQuestion} disabled={isQuestionDisabled}>

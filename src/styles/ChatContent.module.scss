@@ -4,6 +4,7 @@
   flex-direction: column;
   flex: 1;
   overflow-y: auto;
+  padding: 10px 10px 5px;
 }
 
 // Workaround; Works as justify-content: flex-end; but with working scroll
@@ -13,11 +14,4 @@
 
 .children {
   padding: 10px;
-}
-
-.loader {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }

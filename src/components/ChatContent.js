@@ -1,54 +1,76 @@
-import React, { forwardRef, useEffect } from 'react';
+import React, { useRef, useEffect, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../styles/ChatContent.module.scss';
+import { useUser } from '../context/UserContext';
 import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
 import Loader from './Loader';
+import { emitterTemplate } from '../helpers/emitterTemplate';
 
-const isEmpty = (value) => value.length === 0;
+const Wrapper = forwardRef(({ children }, ref) => (
+  <div className={styles.messagesWrapper} ref={ref}>
+    <div className={styles.fixScroll}></div>
+    {children}
+  </div>
+));
 
-const ChatContent = forwardRef(
-  ({ messages, stranger, isTyping, isSearching, children, didUserLeave }, ref) => {
-    useEffect(() => {
-      const { current } = ref;
-      const isScrolledToBottom =
-        current.scrollHeight - (current.scrollTop + current.getBoundingClientRect().height) < 100;
+const ChatContent = ({ messages, stranger, isTyping, isSearching, children }) => {
+  const { userId } = useUser();
+  const wrapperRef = useRef();
 
-      const lastMessage = messages[messages.length - 1];
-      if (lastMessage?.initializer !== stranger || isScrolledToBottom || didUserLeave)
-        current.scrollTop = current.scrollHeight;
-    }, [messages, ref, stranger, didUserLeave]);
+  useEffect(() => {
+    const { current } = wrapperRef;
+    const lastMessage = messages[messages.length - 1];
 
-    const renderedMessages = messages.map(({ date, content, initializer, config }) => (
-      <ChatMessage received={initializer === stranger} key={date} date={date} config={config}>
-        {content}
-      </ChatMessage>
-    ));
+    const SCROLL_TOLERANCE = 500;
+    const totalContentHeight = current.scrollHeight;
+    const scrollPosition = current.scrollTop + current.offsetHeight;
 
-    const searching = isEmpty(messages) && isSearching && (
-      <div className={styles.loader}>
-        <Loader />
-      </div>
-    );
+    let isScrolledToBottom = false;
 
+    if (totalContentHeight - scrollPosition < SCROLL_TOLERANCE) {
+      isScrolledToBottom = true;
+    }
+
+    const isSender = lastMessage?.initializer === userId;
+    const isGif = lastMessage?.config?.type === emitterTemplate.gif;
+    // If (user is scrolled almost to bottom || (user sent a message and stranger is not typing || isGif))
+    if (isScrolledToBottom || (isSender && !isTyping) || isGif) {
+      current.scrollTop = current.scrollHeight; // Scroll to bottom
+    }
+  }, [messages, wrapperRef, userId, isTyping]);
+
+  if (isSearching) {
     return (
-      <div className={styles.messagesWrapper} ref={ref}>
-        <div className={styles.fixScroll}></div>
-        {searching}
-        {!isSearching && renderedMessages}
-        {isTyping && <TypingIndicator />}
-        {didUserLeave && (
-          <>
-            <ChatMessage received={true} date={Date.now()}>
-              Zakończono rozmowę
-            </ChatMessage>
-            <div className={styles.children}>{children}</div>
-          </>
-        )}
-      </div>
+      <Wrapper ref={wrapperRef}>
+        <Loader visible={isSearching} centered />
+        <div className={styles.children}>{children}</div>
+      </Wrapper>
     );
   }
-);
+
+  if (stranger === null) {
+    return (
+      <Wrapper ref={wrapperRef}>
+        <ChatMessage received={true} date={Date.now()}>
+          Zakończono rozmowę. Znajdź kogoś innego :)
+        </ChatMessage>
+        <div className={styles.children}>{children}</div>
+      </Wrapper>
+    );
+  }
+
+  return (
+    <Wrapper ref={wrapperRef}>
+      {messages.map(({ date, content, initializer, config }) => (
+        <ChatMessage received={initializer !== userId} key={date} date={date} config={config}>
+          {content}
+        </ChatMessage>
+      ))}
+      <TypingIndicator visible={isTyping} />
+    </Wrapper>
+  );
+};
 
 ChatContent.propTypes = {
   messages: PropTypes.array.isRequired,
@@ -56,14 +78,12 @@ ChatContent.propTypes = {
   isTyping: PropTypes.bool,
   isSearching: PropTypes.bool,
   children: PropTypes.element,
-  didUserLeave: PropTypes.bool,
 };
 
 ChatContent.defaultProps = {
   stranger: null,
   isTyping: false,
   isSearching: false,
-  didUserLeave: false,
   children: null,
 };
 

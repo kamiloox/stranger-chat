@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/ChatView.module.scss';
 import {
   onStrangerFound,
@@ -16,6 +16,7 @@ import {
   offMessage,
   offAskQuestion,
 } from '../api/events';
+import { UserProvider } from '../context/UserContext';
 import ChatFooter from '../components/ChatFooter';
 import ChatContent from '../components/ChatContent';
 import ChatHeader from '../components/ChatHeader';
@@ -25,23 +26,17 @@ const ChatView = () => {
   const [stranger, setStranger] = useState(null);
   const [messages, setMessages] = useState([]);
   const [askedQuestions, setAskedQuestions] = useState([]);
-  const [didUserLeave, setDidUserLeave] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
 
-  const chatContentRef = useRef(null);
-
-  const handleMatch = () => {
+  const startSearching = () => {
     setMessages([]);
-    setStranger(null);
-    setDidUserLeave(false);
     setIsSearching(true);
     emitMatch();
   };
 
-  let matchInterval;
   useEffect(() => {
-    handleMatch();
+    startSearching();
 
     onWarning((data) => console.log(data));
 
@@ -55,10 +50,11 @@ const ChatView = () => {
     onMessage((newMessage) => {
       setIsTyping(false);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
+      console.log(newMessage);
     });
 
     onLeaveChat(() => {
-      setDidUserLeave(true);
+      setStranger(null);
     });
 
     onAskQuestion((question) => {
@@ -83,33 +79,28 @@ const ChatView = () => {
     };
   }, []);
 
-  const handleStopMatch = () => {
-    clearInterval(matchInterval);
+  const stopSearching = () => {
     emitStopMatch();
     setIsSearching(false);
   };
 
   return (
-    <div className={styles.wrapper}>
-      <ChatHeader
-        isDisabled={stranger === null || didUserLeave}
-        isSearching={isSearching}
-        handleStopMatch={handleStopMatch}
-      />
-      <ChatContent
-        messages={messages}
-        stranger={stranger}
-        isTyping={isTyping}
-        isSearching={isSearching}
-        didUserLeave={didUserLeave}
-        ref={chatContentRef}
-      >
-        <Button onClick={() => (isSearching ? handleStopMatch() : handleMatch())}>
-          {isSearching ? 'Przestań szukać' : 'Znajdź nowego rozmówcę'}
-        </Button>
-      </ChatContent>
-      <ChatFooter isDisabled={stranger === null || didUserLeave} askedQuestions={askedQuestions} />
-    </div>
+    <UserProvider>
+      <div className={styles.wrapper}>
+        <ChatHeader isDisabled={stranger === null} isSearching={isSearching} />
+        <ChatContent
+          messages={messages}
+          stranger={stranger}
+          isTyping={isTyping}
+          isSearching={isSearching}
+        >
+          <Button onClick={() => (isSearching ? stopSearching() : startSearching())}>
+            {isSearching ? 'Przestań szukać' : 'Znajdź nowego rozmówcę'}
+          </Button>
+        </ChatContent>
+        <ChatFooter isDisabled={stranger === null} askedQuestions={askedQuestions} />
+      </div>
+    </UserProvider>
   );
 };
 

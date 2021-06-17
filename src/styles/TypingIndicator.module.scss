@@ -1,12 +1,16 @@
 .wrapper {
-  display: flex;
+  display: none;
   align-items: center;
   background-color: var(--color-secondary);
-  margin: 5px 10px;
+  margin: 3px 0;
   min-height: calc(var(--font-m) * 2);
   padding: 0 12px;
   border-radius: 10px 10px 10px 0;
   align-self: flex-start;
+}
+
+.visible {
+  display: flex;
 }
 
 .dot {

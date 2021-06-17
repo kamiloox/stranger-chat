@@ -1,19 +1,19 @@
-$marginBottom: 5px;
+$margin: 3px;
 
 .wrapper {
-  max-width: 75%;
+  max-width: 65%;
   align-self: flex-end;
+  margin: $margin;
 }
 
 .item {
   position: relative;
   background-color: var(--color-tertiary);
-  margin: $marginBottom 10px 0;
   padding: 2px 5px;
   border-radius: 10px 10px 0;
 
   &:last-child {
-    border-bottom: $marginBottom solid var(--color-body); // Simulates margin due to problems across browsers
+    border-bottom: $margin solid var(--color-body); // Simulates margin due to problems across browsers
     border-bottom-left-radius: 16px;
   }
 
@@ -44,4 +44,9 @@ $marginBottom: 5px;
   & > div {
     background-color: var(--color-question);
   }
+}
+
+.gif {
+  border-radius: 8px;
+  max-width: 100%;
 }

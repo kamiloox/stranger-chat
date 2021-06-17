@@ -6,9 +6,9 @@ import { ReactComponent as ExitIcon } from '../assets/exitIcon.svg';
 import Paragraph from './Paragraph';
 import Button from './Button';
 
-const ChatHeader = ({ isDisabled, isSearching, handleStopMatch }) => (
+const ChatHeader = ({ isDisabled, isSearching }) => (
   <div className={`${styles.header} ${isDisabled ? styles.disabled : ''}`}>
-    <Button type="icon" onClick={() => (isSearching ? handleStopMatch() : emitLeaveChat())}>
+    <Button type="icon" onClick={emitLeaveChat}>
       <ExitIcon />
     </Button>
     <Paragraph>{isSearching ? 'Szukam rozmówcy' : 'Nieznajomy'}</Paragraph>
@@ -18,7 +18,6 @@ const ChatHeader = ({ isDisabled, isSearching, handleStopMatch }) => (
 ChatHeader.propTypes = {
   isDisabled: PropTypes.bool,
   isSearching: PropTypes.bool,
-  handleStopMatch: PropTypes.func.isRequired,
 };
 
 ChatHeader.defaultProps = {
