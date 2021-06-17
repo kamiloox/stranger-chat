@@ -1,21 +1,23 @@
 import React, { useState, useRef, createRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../styles/ChatFooter.module.scss';
-import { emitMessageSend, emitIsTyping } from '../api/events';
+import { emitMessage, emitIsTyping, emitAskQuestion } from '../api/events';
 import { ReactComponent as ArrowIcon } from '../assets/arrowIcon.svg';
 import { ReactComponent as EmojiIcon } from '../assets/emojiIcon.svg';
 import { ReactComponent as GifIcon } from '../assets/gifIcon.svg';
 import { ReactComponent as SendIcon } from '../assets/sendIcon.svg';
+import { ReactComponent as QuestionIcon } from '../assets/questionIcon.svg';
 import Button from './Button';
 import Giphy from './Giphy';
 import TextInput from './TextInput';
 
 const isEmpty = (value) => value.length === 0;
 
-const ChatFooter = ({ isDisabled }) => {
+const ChatFooter = ({ isDisabled, askedQuestions }) => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [giphy, setGiphy] = useState(false);
+  const [isQuestionDisabled, setIsQuestionDisabled] = useState(false);
   const wrapperRef = useRef(null);
   const inputRef = createRef(null);
 
@@ -30,7 +32,7 @@ const ChatFooter = ({ isDisabled }) => {
     e.preventDefault();
 
     if (!isEmpty(currentMessage)) {
-      emitMessageSend(currentMessage);
+      emitMessage(currentMessage);
       setIsExpanded(false);
       setGiphy({ ...giphy, visible: false });
       setCurrentMessage('');
@@ -60,6 +62,12 @@ const ChatFooter = ({ isDisabled }) => {
     );
   }
 
+  const askQuestion = () => {
+    emitAskQuestion(askedQuestions);
+    setIsQuestionDisabled(true);
+    setTimeout(() => setIsQuestionDisabled(false), 30 * 1000);
+  };
+
   return (
     <div
       className={`
@@ -77,6 +85,9 @@ const ChatFooter = ({ isDisabled }) => {
         </Button>
         <Button type="icon" onClick={() => setGiphy({ visible: true, type: 'gif' })}>
           <GifIcon />
+        </Button>
+        <Button type="icon" onClick={askQuestion} disabled={isQuestionDisabled}>
+          <QuestionIcon />
         </Button>
       </div>
       <TextInput

@@ -4,10 +4,11 @@ import { GiphyFetch } from '@giphy/js-fetch-api';
 import PropTypes from 'prop-types';
 import styles from '../styles/Giphy.module.scss';
 import { ReactComponent as CloseIcon } from '../assets/closeIcon.svg';
-import { emitMessageSend } from '../api/events';
+import { emitMessage } from '../api/events';
 import TextInput from './TextInput';
 import Button from './Button';
 import { GiphyContext, GiphyProvider } from '../context/GiphyContext';
+import { emitterType } from '../helpers/emitterTemplate';
 
 const giphyFetch = new GiphyFetch(process.env.REACT_APP_GIPHY_KEY);
 
@@ -60,7 +61,7 @@ const Components = ({ setIsVisible, padding, type }) => {
   };
 
   const handleGifClick = ({ images }) => {
-    emitMessageSend(images.fixed_width);
+    emitMessage(images.fixed_width, emitterType.gif);
     setIsVisible({ type, visible: true });
   };
 

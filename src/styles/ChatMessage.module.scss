@@ -28,7 +28,7 @@ $marginBottom: 5px;
 
 .received {
   align-self: flex-start;
-  & > * {
+  & > div {
     background-color: var(--color-secondary);
     border-radius: 10px 10px 10px 0;
     padding: 2px 5px;
@@ -37,5 +37,11 @@ $marginBottom: 5px;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 16px;
     }
+  }
+}
+
+.question {
+  & > div {
+    background-color: var(--color-question);
   }
 }

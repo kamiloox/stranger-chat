@@ -19,8 +19,8 @@ const ChatContent = forwardRef(
         current.scrollTop = current.scrollHeight;
     }, [messages, ref, stranger, didUserLeave]);
 
-    const renderedMessages = messages.map(({ date, content, initializer }) => (
-      <ChatMessage received={initializer === stranger} key={date} date={date}>
+    const renderedMessages = messages.map(({ date, content, initializer, config }) => (
+      <ChatMessage received={initializer === stranger} key={date} date={date} config={config}>
         {content}
       </ChatMessage>
     ));

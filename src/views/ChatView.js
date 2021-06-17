@@ -1,18 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from '../styles/ChatView.module.scss';
 import {
-  emitMatch,
   onStrangerFound,
-  offStrangerFound,
-  emitStopMatch,
   onWarning,
-  onMessageReceived,
+  onMessage,
   onIsTyping,
+  onLeaveChat,
+  onAskQuestion,
+  emitLeaveChat,
+  emitStopMatch,
+  emitMatch,
+  offStrangerFound,
   offLeaveChat,
   offIsTyping,
-  onLeaveChat,
-  offMessageReceived,
-  emitLeaveChat,
+  offMessage,
+  offAskQuestion,
 } from '../api/events';
 import ChatFooter from '../components/ChatFooter';
 import ChatContent from '../components/ChatContent';
@@ -22,6 +24,7 @@ import Button from '../components/Button';
 const ChatView = () => {
   const [stranger, setStranger] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [askedQuestions, setAskedQuestions] = useState([]);
   const [didUserLeave, setDidUserLeave] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -49,13 +52,18 @@ const ChatView = () => {
       setIsSearching(false);
     });
 
-    onMessageReceived((newMessage) => {
+    onMessage((newMessage) => {
       setIsTyping(false);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
     onLeaveChat(() => {
       setDidUserLeave(true);
+    });
+
+    onAskQuestion((question) => {
+      setAskedQuestions((prevAskedQuestions) => [...prevAskedQuestions, question]);
+      setMessages((prevMessages) => [...prevMessages, question]);
     });
 
     let typingTimeout;
@@ -67,12 +75,13 @@ const ChatView = () => {
 
     return () => {
       offIsTyping();
-      offMessageReceived();
+      offMessage();
       offLeaveChat();
       offStrangerFound();
+      offAskQuestion();
       emitLeaveChat();
     };
-  }, [setStranger, setMessages]);
+  }, []);
 
   const handleStopMatch = () => {
     clearInterval(matchInterval);
@@ -99,7 +108,7 @@ const ChatView = () => {
           {isSearching ? 'Przestań szukać' : 'Znajdź nowego rozmówcę'}
         </Button>
       </ChatContent>
-      <ChatFooter isDisabled={stranger === null || didUserLeave} />
+      <ChatFooter isDisabled={stranger === null || didUserLeave} askedQuestions={askedQuestions} />
     </div>
   );
 };
