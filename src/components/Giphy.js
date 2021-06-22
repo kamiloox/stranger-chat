@@ -21,13 +21,18 @@ const Components = ({ closeFn, padding, type }) => {
   const totalPadding = padding * 2;
   const [width, setWidth] = useState(window.innerWidth - totalPadding);
   const inputRef = useRef(null);
+  const wrapperRef = useRef();
   const { searchKey, setSearchKey } = useGiphy();
   const initialAnimatedText = 'hej';
 
   const contentType = contentTypes[type];
 
   useEffect(() => {
-    const updateWidth = () => setWidth(window.innerWidth - totalPadding);
+    const updateWidth = () => {
+      const totalWidth = wrapperRef.current.parentNode.getBoundingClientRect().width - totalPadding;
+      setWidth(totalWidth);
+    };
+    updateWidth();
     window.addEventListener('resize', updateWidth);
     return () => window.removeEventListener('resize', updateWidth);
   }, [totalPadding]);
@@ -61,16 +66,15 @@ const Components = ({ closeFn, padding, type }) => {
   };
 
   const handleGifClick = ({ images }) => {
-    console.log(images);
-    emitMessage(images?.fixed_width?.url, emitterType.gif);
+    emitMessage(images?.downsized_medium?.url || images?.original?.url, emitterType.gif);
     closeFn();
   };
 
   return (
-    <>
+    <div ref={wrapperRef} className={styles.wrapper}>
       <Grid
         key={searchKey}
-        columns={2}
+        columns={width > 800 ? 3 : 2}
         width={width}
         fetchGifs={fetchItems}
         className={styles.grid}
@@ -88,7 +92,7 @@ const Components = ({ closeFn, padding, type }) => {
           placeholder="Szukaj gifa"
         />
       </div>
-    </>
+    </div>
   );
 };
 

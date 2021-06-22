@@ -35,14 +35,8 @@ $paddingVertical: 15px;
   }
 }
 
-.giphyWrapper {
-  grid-template-columns: none;
-  grid-template-rows: auto auto;
-  grid-gap: 10px;
-}
-
 .actionButtons {
   & button {
-    padding: 0 6px;
+    padding: 0 3px;
   }
 }

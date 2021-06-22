@@ -54,9 +54,15 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
     setCurrentMessage(value);
   };
 
+  const askQuestion = () => {
+    emitAskQuestion(askedQuestions);
+    setIsQuestionDisabled(true);
+    setTimeout(() => setIsQuestionDisabled(false), 30 * 1000);
+  };
+
   if (giphy?.visible) {
     return (
-      <div className={`${styles.wrapper} ${styles.giphyWrapper}`}>
+      <div className={styles.wrapper}>
         <Giphy
           padding={20}
           closeFn={() => setGiphy({ ...giphy, visible: false })}
@@ -65,12 +71,6 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
       </div>
     );
   }
-
-  const askQuestion = () => {
-    emitAskQuestion(askedQuestions);
-    setIsQuestionDisabled(true);
-    setTimeout(() => setIsQuestionDisabled(false), 30 * 1000);
-  };
 
   return (
     <div

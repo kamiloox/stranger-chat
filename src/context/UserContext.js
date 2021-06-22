@@ -1,10 +1,12 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
-import { offGetUserId, onGetUserId } from '../api/events';
+import { emitGetUserId, offGetUserId, onGetUserId } from '../api/events';
 
 export const UserContext = createContext({});
 
 export const useUser = () => {
   const { userId } = useContext(UserContext);
+  useEffect(() => emitGetUserId(), []);
+
   return { userId };
 };
 

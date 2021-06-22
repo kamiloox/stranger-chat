@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { emitterTemplate, emitterType } from '../helpers/emitterTemplate';
 
-const ENDPOINT = 'kd-delta.herokuapp.com';
+const ENDPOINT = '192.168.0.8:8080';
 
 const EVENTS = {
   match: 'match',

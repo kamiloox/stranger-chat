@@ -1,0 +1,21 @@
+$tablet: 768px;
+$laptop: 1024px;
+$desktop: 1200px;
+
+@mixin bp-tablet {
+  @media screen and (min-width: $tablet) {
+    @content;
+  }
+}
+
+@mixin bp-laptop {
+  @media screen and (min-width: $laptop) {
+    @content;
+  }
+}
+
+@mixin bp-desktop {
+  @media screen and (min-width: $desktop) {
+    @content;
+  }
+}
