@@ -5,8 +5,8 @@ import styles from '../styles/ChatMessage.module.scss';
 import Paragraph from './Paragraph';
 import { emitterType } from '../helpers/emitterTemplate';
 
-const ChatMessage = ({ children, received, date, config }) => {
-  if (config.type === emitterType.gif) {
+const ChatMessage = ({ children, received, date, tail }) => {
+  if (tail.type === emitterType.gif) {
     return (
       <div className={`${styles.wrapper} ${received ? styles.received : ''}`}>
         <img src={children} className={styles.gif} alt="Obraz gifa" />
@@ -17,7 +17,7 @@ const ChatMessage = ({ children, received, date, config }) => {
   return (
     <div
       className={`${styles.wrapper} ${received ? styles.received : ''} ${
-        config?.type === emitterType.question ? styles.question : ''
+        tail?.type === emitterType.question ? styles.question : ''
       }`}
     >
       <div title={new Date(date).toLocaleTimeString()} className={styles.item}>
@@ -39,12 +39,12 @@ ChatMessage.propTypes = {
   children: PropTypes.string.isRequired,
   date: PropTypes.number.isRequired,
   received: PropTypes.bool,
-  config: PropTypes.object,
+  tail: PropTypes.object,
 };
 
 ChatMessage.defaultProps = {
   received: false,
-  config: {},
+  tail: {},
 };
 
 export default ChatMessage;

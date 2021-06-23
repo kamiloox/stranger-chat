@@ -79,23 +79,23 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
       }`}
       ref={wrapperRef}
     >
-      <Button type="icon" onClick={() => setIsExpanded(false)}>
+      <Button btnType="icon" onClick={() => setIsExpanded(false)}>
         <ArrowIcon />
       </Button>
       <div className={styles.actionButtons}>
         <Button
-          type="icon"
+          btnType="icon"
           onClick={() => setGiphy({ visible: true, type: giphyContentTypes.animatedText })}
         >
           <EmojiIcon />
         </Button>
         <Button
-          type="icon"
+          btnType="icon"
           onClick={() => setGiphy({ visible: true, type: giphyContentTypes.gif })}
         >
           <GifIcon />
         </Button>
-        <Button type="icon" onClick={askQuestion} disabled={isQuestionDisabled}>
+        <Button btnType="icon" onClick={askQuestion} disabled={isQuestionDisabled}>
           <QuestionIcon />
         </Button>
       </div>
@@ -108,7 +108,7 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
         disabled={isDisabled}
         ref={inputRef}
       />
-      <Button type="icon" onClick={handleSubmit}>
+      <Button btnType="icon" onClick={handleSubmit}>
         <SendIcon className={styles.icon} />
       </Button>
     </div>

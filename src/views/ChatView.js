@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from '../styles/ChatView.module.scss';
 import {
   onStrangerFound,
@@ -17,6 +17,7 @@ import {
   offAskQuestion,
 } from '../api/events';
 import { UserProvider } from '../context/UserContext';
+import { useChatKeywords } from '../context/ChatContext';
 import ChatFooter from '../components/ChatFooter';
 import ChatContent from '../components/ChatContent';
 import ChatHeader from '../components/ChatHeader';
@@ -26,31 +27,31 @@ const ChatView = () => {
   const [stranger, setStranger] = useState(null);
   const [messages, setMessages] = useState([]);
   const [askedQuestions, setAskedQuestions] = useState([]);
+  const { keywords } = useChatKeywords();
   const [isSearching, setIsSearching] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const refMatchInterval = useRef(0);
 
   const startSearching = () => {
     setMessages([]);
     setIsSearching(true);
-    emitMatch();
+    refMatchInterval.current = setInterval(() => emitMatch(keywords), 500);
   };
 
   useEffect(() => {
-    startSearching();
-
     onWarning((data) => console.log(data));
 
     onStrangerFound((data) => {
       if (!data) return;
 
-      setStranger(data);
+      clearInterval(refMatchInterval.current);
+      setStranger(data.id);
       setIsSearching(false);
     });
 
     onMessage((newMessage) => {
       setIsTyping(false);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-      console.log(newMessage);
     });
 
     onLeaveChat(() => {

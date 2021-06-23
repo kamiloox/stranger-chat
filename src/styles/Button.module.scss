@@ -4,10 +4,22 @@
 }
 
 .normal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: var(--color-tertiary);
   padding: 8px 18px;
   font-weight: bold;
   border-radius: 2px;
+}
+
+.keyword {
+  padding: 4px 3px 4px 9px;
+  border: 1px dashed black;
+  
+  & svg {
+    max-height: 14px;
+  }
 }
 
 .icon {

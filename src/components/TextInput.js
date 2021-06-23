@@ -25,7 +25,7 @@ const components = {
 
 const TextInput = forwardRef(({ as, onSubmit, onChange, ...rest }, ref) => {
   useEffect(() => {
-    ref.current.focus();
+    if (ref) ref.current.focus();
   }, [ref]);
 
   const Component = components[as];

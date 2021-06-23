@@ -1,24 +1,24 @@
 import { io } from 'socket.io-client';
 import { emitterTemplate, emitterType } from '../helpers/emitterTemplate';
 
-const ENDPOINT = '192.168.0.8:8080';
+const ENDPOINT = 'localhost:8080';
 
 const EVENTS = {
   match: 'match',
-  stopMatch: 'stop_match',
-  isTyping: 'is_typing',
+  stopMatch: 'terminate',
+  isTyping: 'isTyping',
   message: 'message',
-  leaveChat: 'leave_chat',
+  leaveChat: 'terminate',
   warning: 'warning',
   question: 'question',
-  userId: 'user_id',
+  userId: 'sid',
 };
 
 export const socket = io(ENDPOINT);
 
 // Emitters
 
-export const emitMatch = () => socket.emit(EVENTS.match);
+export const emitMatch = (keywords = []) => socket.emit(EVENTS.match, keywords);
 
 export const emitStopMatch = () => socket.emit(EVENTS.stopMatch);
 

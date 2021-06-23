@@ -5,7 +5,7 @@ import routes from '../routes';
 const HomeView = () => (
   <div>
     <h1>Widok domowy</h1>
-    <Button type="link" to={routes.chat}>
+    <Button btnType="link" to={routes.chat}>
       Znajdź rozmówcę
     </Button>
   </div>

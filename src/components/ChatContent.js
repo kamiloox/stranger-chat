@@ -6,6 +6,7 @@ import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
 import Loader from './Loader';
 import { emitterTemplate } from '../helpers/emitterTemplate';
+import KeywordList from './KeywordsList';
 
 const Wrapper = forwardRef(({ children }, ref) => (
   <div className={styles.messagesWrapper} ref={ref}>
@@ -33,7 +34,7 @@ const ChatContent = ({ messages, stranger, isTyping, isSearching, children }) =>
     }
 
     const isSender = lastMessage?.initializer === userId;
-    const isGif = lastMessage?.config?.type === emitterTemplate.gif;
+    const isGif = lastMessage?.tail?.type === emitterTemplate.gif;
     // If (user is scrolled almost to bottom || (user sent a message and stranger is not typing || isGif))
     if (isScrolledToBottom || (isSender && !isTyping) || isGif) {
       current.scrollTop = current.scrollHeight; // Scroll to bottom
@@ -52,6 +53,7 @@ const ChatContent = ({ messages, stranger, isTyping, isSearching, children }) =>
   if (stranger === null) {
     return (
       <Wrapper ref={wrapperRef}>
+        <KeywordList />
         <ChatMessage received={true} date={Date.now()}>
           Zakończono rozmowę. Znajdź kogoś innego :)
         </ChatMessage>
@@ -62,8 +64,8 @@ const ChatContent = ({ messages, stranger, isTyping, isSearching, children }) =>
 
   return (
     <Wrapper ref={wrapperRef}>
-      {messages.map(({ date, content, initializer, config }) => (
-        <ChatMessage received={initializer !== userId} key={date} date={date} config={config}>
+      {messages.map(({ date, content, initializer, tail }) => (
+        <ChatMessage received={initializer !== userId} key={date} date={date} tail={tail}>
           {content}
         </ChatMessage>
       ))}

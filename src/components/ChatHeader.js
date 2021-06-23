@@ -8,7 +8,7 @@ import Button from './Button';
 
 const ChatHeader = ({ isDisabled, isSearching }) => (
   <div className={`${styles.header} ${isDisabled ? styles.disabled : ''}`}>
-    <Button type="icon" onClick={emitLeaveChat}>
+    <Button btnType="icon" onClick={emitLeaveChat}>
       <ExitIcon />
     </Button>
     <Paragraph>{isSearching ? 'Szukam rozmówcy' : 'Nieznajomy'}</Paragraph>

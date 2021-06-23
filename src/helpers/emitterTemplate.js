@@ -6,5 +6,5 @@ export const emitterType = {
 
 export const emitterTemplate = (content, type = emitterType.plain) => ({
   content,
-  config: { type },
+  tail: { type },
 });

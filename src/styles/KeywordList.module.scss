@@ -1,0 +1,16 @@
+.wrapper {
+  margin-bottom: 15px;
+}
+
+.keywordsWrapper {
+  display: flex;
+
+  & > button {
+    margin-right: 5px;
+  }
+}
+
+.formWrapper {
+  display: inline-flex;
+  margin-top: 15px;
+}

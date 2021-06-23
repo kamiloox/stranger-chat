@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import routes from '../routes';
 import ChatView from './ChatView';
+import { ChatProvider } from '../context/ChatContext';
 import HomeView from './HomeView';
 
 const RootView = () => (
@@ -11,7 +12,9 @@ const RootView = () => (
         <HomeView />
       </Route>
       <Route path={routes.chat}>
-        <ChatView />
+        <ChatProvider>
+          <ChatView />
+      </ChatProvider>
       </Route>
     </Switch>
   </Router>

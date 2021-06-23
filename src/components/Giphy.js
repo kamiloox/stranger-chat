@@ -82,7 +82,7 @@ const Components = ({ closeFn, padding, type }) => {
         noLink
       />
       <div className={styles.searchFooter}>
-        <Button type="icon" onClick={closeFn}>
+        <Button btnType="icon" onClick={closeFn}>
           <CloseIcon />
         </Button>
         <TextInput

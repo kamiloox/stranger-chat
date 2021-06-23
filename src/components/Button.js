@@ -9,15 +9,15 @@ const buttonTypes = {
   link: 'link',
 };
 
-const Button = forwardRef(({ children, onClick, type, ...rest }, ref) => {
-  const buttonType = buttonTypes[type];
+const Button = forwardRef(({ children, onClick, btnType, keyword, ...rest }, ref) => {
+  const buttonType = buttonTypes[btnType];
   const Component = buttonType === buttonTypes.link ? Link : 'button';
 
   return (
     <Component
       ref={ref}
       onClick={onClick}
-      className={`${styles.button} ${styles[buttonType]}`}
+      className={`${styles.button} ${styles[buttonType]} ${keyword ? styles.keyword : ""}`}
       {...rest}
     >
       {children}
@@ -28,12 +28,12 @@ const Button = forwardRef(({ children, onClick, type, ...rest }, ref) => {
 Button.propTypes = {
   onClick: PropTypes.func,
   children: PropTypes.node.isRequired,
-  type: PropTypes.oneOf([buttonTypes.normal, buttonTypes.icon, buttonTypes.link]),
+  btnType: PropTypes.oneOf([buttonTypes.normal, buttonTypes.icon, buttonTypes.link]),
 };
 
 Button.defaultProps = {
   onClick: null,
-  type: buttonTypes.normal,
+  btnType: buttonTypes.normal,
 };
 
 export default Button;
