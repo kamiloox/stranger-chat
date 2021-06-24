@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../styles/TextInput.module.scss';
 
@@ -24,10 +24,6 @@ const components = {
 };
 
 const TextInput = forwardRef(({ as, onSubmit, onChange, ...rest }, ref) => {
-  useEffect(() => {
-    if (ref) ref.current.focus();
-  }, [ref]);
-
   const Component = components[as];
 
   const handleEnter = (e) => {

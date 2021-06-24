@@ -1,116 +1,100 @@
-import { useRef, useEffect, useState } from 'react';
-import { Grid } from '@giphy/react-components';
-import { GiphyFetch } from '@giphy/js-fetch-api';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../styles/Giphy.module.scss';
-import { ReactComponent as CloseIcon } from '../assets/closeIcon.svg';
 import { emitMessage } from '../api/events';
+import { emitterType } from '../helpers/emitterTemplate';
+import useGiphy from '../hooks/useGiphy';
+import { ReactComponent as CloseIcon } from '../assets/closeIcon.svg';
+import { ReactComponent as ErrorSearch } from '../assets/errorSearch.svg';
 import TextInput from './TextInput';
 import Button from './Button';
-import { GiphyProvider, useGiphy } from '../context/GiphyContext';
-import { emitterType } from '../helpers/emitterTemplate';
-
-const giphyFetch = new GiphyFetch(process.env.REACT_APP_GIPHY_KEY);
 
 export const contentTypes = {
-  gif: 'gif',
-  animatedText: 'animatedText',
+  gif: 'gifs',
+  sticker: 'stickers',
 };
 
-const Components = ({ closeFn, padding, type }) => {
-  const totalPadding = padding * 2;
-  const [width, setWidth] = useState(window.innerWidth - totalPadding);
-  const inputRef = useRef(null);
-  const wrapperRef = useRef();
-  const { searchKey, setSearchKey } = useGiphy();
-  const initialAnimatedText = 'hej';
+const GiphyItem = forwardRef(({ onClick, src }, ref) => (
+  <img ref={ref} src={src} alt="Gif" className={styles.img} onClick={() => onClick(src)} />
+));
 
-  const contentType = contentTypes[type];
+const Giphy = ({ closeFn, type }) => {
+  const LIMIT = 5;
+  const inputRef = useRef(null);
+  const observer = useRef(null);
+  const [query, setQuery] = useState('');
+  const [offset, setOffset] = useState(LIMIT);
+  const { images, hasMore, isLoading } = useGiphy(query, offset, LIMIT, type);
 
   useEffect(() => {
-    const updateWidth = () => {
-      const totalWidth = wrapperRef.current.parentNode.getBoundingClientRect().width - totalPadding;
-      setWidth(totalWidth);
-    };
-    updateWidth();
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
-  }, [totalPadding]);
+    inputRef.current.focus();
+  }, []);
 
-  const fetchItems = (offset) => {
-    return new Promise(async (resolve, reject) => {
-      const pagination = {
-        limit: 10,
-        offset,
-      };
-      try {
-        let data = null;
-        switch (contentType) {
-          case contentTypes.gif:
-            if (searchKey.length === 0) data = await giphyFetch.trending(pagination);
-            else data = await giphyFetch.search(searchKey, { lang: 'pl', ...pagination });
-            break;
-          case contentTypes.animatedText:
-            if (searchKey.length === 0)
-              data = await giphyFetch.animate(initialAnimatedText, pagination);
-            else data = await giphyFetch.animate(searchKey, pagination);
-            break;
-          default:
-            break;
-        }
-        resolve(data);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
+  const lastElementRef = useCallback(
+    (node) => {
+      if (isLoading || !hasMore) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(([element]) => {
+        if (element.isIntersecting) setOffset((prevOffset) => prevOffset + LIMIT);
+      });
+      if (node) observer.current.observe(node);
+    },
+    [hasMore, isLoading]
+  );
 
-  const handleGifClick = ({ images }) => {
-    emitMessage(images?.downsized_medium?.url || images?.original?.url, emitterType.gif);
+  const handleItemClick = (image) => {
+    emitMessage(image, emitterType.gif);
     closeFn();
   };
 
+  const handleSearch = (e) => {
+    setQuery(e.target.value);
+    setOffset(0);
+  };
+
+  const unresolvableQuery = !images.length && !isLoading && (
+    <div className={styles.error}>
+      <p>Brak gifów</p>
+      <ErrorSearch />
+    </div>
+  );
+
   return (
-    <div ref={wrapperRef} className={styles.wrapper}>
-      <Grid
-        key={searchKey}
-        columns={width > 800 ? 3 : 2}
-        width={width}
-        fetchGifs={fetchItems}
-        className={styles.grid}
-        onGifClick={handleGifClick}
-        noLink
-      />
+    <div className={styles.wrapper}>
+      <div className={styles.grid}>
+        {unresolvableQuery}
+        {images.length
+          ? images.map((src, i) => {
+              const isLastImage = images.length === i + 1;
+              const props = { onClick: () => handleItemClick(src), src };
+              if (isLastImage) return <GiphyItem key={src} ref={lastElementRef} {...props} />;
+              return <GiphyItem key={src} {...props} />;
+            })
+          : ''}
+      </div>
       <div className={styles.searchFooter}>
         <Button btnType="icon" onClick={closeFn}>
           <CloseIcon />
         </Button>
         <TextInput
-          onChange={(e) => setSearchKey(e.target.value)}
+          onChange={handleSearch}
           ref={inputRef}
           as="input"
-          placeholder="Szukaj gifa"
+          placeholder={type === contentTypes.gif ? 'Szukaj gifa' : 'Szukaj naklejki'}
+          value={query}
         />
       </div>
     </div>
   );
 };
 
-const Giphy = ({ type, closeFn, padding }) => (
-  <GiphyProvider>
-    <Components closeFn={closeFn} padding={padding} type={type} />
-  </GiphyProvider>
-);
-
 Giphy.propTypes = {
   closeFn: PropTypes.func.isRequired,
-  type: PropTypes.oneOf([contentTypes.animatedText, contentTypes.gif]),
-  padding: PropTypes.number,
+  type: PropTypes.oneOf([contentTypes.gif, contentTypes.sticker]),
 };
 
 Giphy.defaultProps = {
   type: contentTypes.gif,
-  padding: 0,
 };
 
 export default Giphy;

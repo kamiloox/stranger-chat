@@ -1,4 +1,4 @@
-import React, { useState, useRef, createRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../styles/ChatFooter.module.scss';
 import { emitMessage, emitIsTyping, emitAskQuestion } from '../api/events';
@@ -19,7 +19,11 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
   const [giphy, setGiphy] = useState({ type: giphyContentTypes.gif, visible: false });
   const [isQuestionDisabled, setIsQuestionDisabled] = useState(false);
   const wrapperRef = useRef(null);
-  const inputRef = createRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (!giphy.visible) inputRef.current.focus();
+  }, [isDisabled, giphy.visible]);
 
   useEffect(() => {
     if (isDisabled) {
@@ -60,17 +64,9 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
     setTimeout(() => setIsQuestionDisabled(false), 30 * 1000);
   };
 
-  if (giphy?.visible) {
-    return (
-      <div className={styles.wrapper}>
-        <Giphy
-          padding={20}
-          closeFn={() => setGiphy({ ...giphy, visible: false })}
-          type={giphy?.type}
-        />
-      </div>
-    );
-  }
+  const giphyComponent = giphy?.visible && (
+    <Giphy padding={20} closeFn={() => setGiphy({ ...giphy, visible: false })} type={giphy?.type} />
+  );
 
   return (
     <div
@@ -79,13 +75,14 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
       }`}
       ref={wrapperRef}
     >
+      {giphyComponent}
       <Button btnType="icon" onClick={() => setIsExpanded(false)}>
         <ArrowIcon />
       </Button>
       <div className={styles.actionButtons}>
         <Button
           btnType="icon"
-          onClick={() => setGiphy({ visible: true, type: giphyContentTypes.animatedText })}
+          onClick={() => setGiphy({ visible: true, type: giphyContentTypes.sticker })}
         >
           <EmojiIcon />
         </Button>

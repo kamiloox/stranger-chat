@@ -2,11 +2,11 @@ $paddingHorizontal: 20px;
 $paddingVertical: 15px;
 
 .wrapper {
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
   align-items: center;
+  position: relative;
   background-color: var(--color-primary);
-  padding: 15px 20px;
+  padding: 15px 20px 10px;
   min-height: 68px;
 
   & > button:last-child {

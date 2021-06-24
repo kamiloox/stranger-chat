@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { emitterTemplate, emitterType } from '../helpers/emitterTemplate';
 
-const ENDPOINT = 'localhost:8080';
+const ENDPOINT = 'https://kd-alfa.herokuapp.com';
 
 const EVENTS = {
   match: 'match',
