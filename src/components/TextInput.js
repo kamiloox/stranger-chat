@@ -23,7 +23,7 @@ const components = {
   textarea: 'textarea',
 };
 
-const TextInput = forwardRef(({ as, onSubmit, onChange, ...rest }, ref) => {
+const TextInput = forwardRef(({ as, onSubmit, onChange, error, ...rest }, ref) => {
   const Component = components[as];
 
   const handleEnter = (e) => {
@@ -34,7 +34,7 @@ const TextInput = forwardRef(({ as, onSubmit, onChange, ...rest }, ref) => {
     if (e.key === ENTER_KEY && onSubmit) {
       e.preventDefault();
       onSubmit(e);
-      if (as === components.textarea) resetTextareaHeight(ref.current);
+      resetTextareaHeight(ref.current);
     }
   };
 
@@ -44,7 +44,7 @@ const TextInput = forwardRef(({ as, onSubmit, onChange, ...rest }, ref) => {
       onInput={() => as === components.textarea && updateTextareaHeight(ref.current)}
       onChange={onChange}
       ref={ref}
-      className={styles.textInput}
+      className={`${styles.textInput} ${error ? styles.error : ''}`}
       {...rest}
     />
   );

@@ -50,3 +50,16 @@ $margin: 3px;
   border-radius: 8px;
   max-width: 100%;
 }
+
+.info {
+  max-width: 100%;
+
+  & > div {
+    background-color: #6d6875;
+    display: flex;
+  }
+}
+
+.botIcon {
+  transform: translateY(2px);
+}

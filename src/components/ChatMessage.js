@@ -4,6 +4,7 @@ import Linkify from 'react-linkify';
 import styles from '../styles/ChatMessage.module.scss';
 import Paragraph from './Paragraph';
 import { emitterType } from '../helpers/emitterTemplate';
+import { ReactComponent as BotIcon } from '../assets/botIcon.svg';
 
 const ChatMessage = ({ children, received, date, tail }) => {
   if (tail.type === emitterType.gif) {
@@ -17,7 +18,7 @@ const ChatMessage = ({ children, received, date, tail }) => {
   return (
     <div
       className={`${styles.wrapper} ${received ? styles.received : ''} ${
-        tail?.type === emitterType.question ? styles.question : ''
+        tail?.type ? styles[tail.type] : ''
       }`}
     >
       <div title={new Date(date).toLocaleTimeString()} className={styles.item}>
@@ -28,6 +29,7 @@ const ChatMessage = ({ children, received, date, tail }) => {
             </a>
           )}
         >
+          {tail?.type === emitterType.info && <BotIcon className={styles.botIcon} />}
           <Paragraph>{children.trim()}</Paragraph>
         </Linkify>
       </div>
@@ -37,12 +39,13 @@ const ChatMessage = ({ children, received, date, tail }) => {
 
 ChatMessage.propTypes = {
   children: PropTypes.string.isRequired,
-  date: PropTypes.number.isRequired,
+  date: PropTypes.number,
   received: PropTypes.bool,
   tail: PropTypes.object,
 };
 
 ChatMessage.defaultProps = {
+  date: Date.now(),
   received: false,
   tail: {},
 };

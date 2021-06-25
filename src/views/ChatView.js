@@ -22,6 +22,7 @@ import ChatFooter from '../components/ChatFooter';
 import ChatContent from '../components/ChatContent';
 import ChatHeader from '../components/ChatHeader';
 import Button from '../components/Button';
+import { emitterTemplate, emitterType } from '../helpers/emitterTemplate';
 
 const ChatView = () => {
   const [stranger, setStranger] = useState(null);
@@ -44,8 +45,13 @@ const ChatView = () => {
     onStrangerFound((data) => {
       if (!data) return;
 
+      const { id, keywords } = data;
+      const welcomeMsg = 'Przywitaj się z nieznajomym.\n';
+      const keywordsMsg = keywords.length ? `Wspólne słowa kluczowe: ${keywords.join(', ')}` : '';
+      if (data.keywords) setMessages([emitterTemplate(welcomeMsg + keywordsMsg, emitterType.info)]);
+
       clearInterval(refMatchInterval.current);
-      setStranger(data.id);
+      setStranger(id);
       setIsSearching(false);
     });
 
@@ -56,6 +62,8 @@ const ChatView = () => {
 
     onLeaveChat(() => {
       setStranger(null);
+      // Removes welcome message
+      setMessages((prevMessages) => prevMessages.slice(1));
     });
 
     onAskQuestion((question) => {

@@ -41,6 +41,12 @@ const ChatContent = ({ messages, stranger, isTyping, isSearching, children }) =>
     }
   }, [messages, wrapperRef, userId, isTyping]);
 
+  const messagesList = messages.map(({ date, content, initializer, tail }) => (
+    <ChatMessage received={initializer !== userId} key={date || Date.now()} date={date} tail={tail}>
+      {content}
+    </ChatMessage>
+  ));
+
   if (isSearching) {
     return (
       <Wrapper ref={wrapperRef}>
@@ -53,6 +59,7 @@ const ChatContent = ({ messages, stranger, isTyping, isSearching, children }) =>
   if (stranger === null) {
     return (
       <Wrapper ref={wrapperRef}>
+        {messagesList}
         <KeywordList />
         <ChatMessage received={true} date={Date.now()}>
           Zakończono rozmowę. Znajdź kogoś innego :)
@@ -64,11 +71,7 @@ const ChatContent = ({ messages, stranger, isTyping, isSearching, children }) =>
 
   return (
     <Wrapper ref={wrapperRef}>
-      {messages.map(({ date, content, initializer, tail }) => (
-        <ChatMessage received={initializer !== userId} key={date} date={date} tail={tail}>
-          {content}
-        </ChatMessage>
-      ))}
+      {messagesList}
       <TypingIndicator visible={isTyping} />
     </Wrapper>
   );

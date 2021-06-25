@@ -15,8 +15,9 @@ const isEmpty = (value) => value.length === 0;
 
 const ChatFooter = ({ isDisabled, askedQuestions }) => {
   const [currentMessage, setCurrentMessage] = useState('');
+  const [isMessageTooLong, setIsMessageTooLong] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [giphy, setGiphy] = useState({ type: giphyContentTypes.gif, visible: false });
+  const [giphy, setGiphy] = useState({ type: null, visible: false });
   const [isQuestionDisabled, setIsQuestionDisabled] = useState(false);
   const wrapperRef = useRef(null);
   const inputRef = useRef(null);
@@ -29,6 +30,7 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
     if (isDisabled) {
       setCurrentMessage('');
       setIsExpanded(false);
+      setGiphy((prevGiphy) => ({ ...prevGiphy, visible: false }));
     }
   }, [isDisabled]);
 
@@ -36,6 +38,7 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
     e.preventDefault();
 
     if (!isEmpty(currentMessage)) {
+      setIsMessageTooLong(false);
       emitMessage(currentMessage);
       setIsExpanded(false);
       setGiphy({ ...giphy, visible: false });
@@ -46,13 +49,16 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
 
   const handleMessageChange = (e) => {
     const { value } = e.target;
-    if (giphy?.visible) return setCurrentMessage(value);
+    setIsMessageTooLong(false);
 
     if (value.length === 0) {
       setIsExpanded(false);
     } else {
       setIsExpanded(true);
     }
+
+    const MAX_LENGTH = 620;
+    if (value.length > MAX_LENGTH) return setIsMessageTooLong(true);
 
     emitIsTyping();
     setCurrentMessage(value);
@@ -64,8 +70,8 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
     setTimeout(() => setIsQuestionDisabled(false), 30 * 1000);
   };
 
-  const giphyComponent = giphy?.visible && (
-    <Giphy padding={20} closeFn={() => setGiphy({ ...giphy, visible: false })} type={giphy?.type} />
+  const giphyComponent = giphy?.visible && !isDisabled && (
+    <Giphy closeFn={() => setGiphy({ ...giphy, visible: false })} type={giphy?.type} />
   );
 
   return (
@@ -103,6 +109,7 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
         placeholder="Napisz wiadomość..."
         autoCorrect="off"
         disabled={isDisabled}
+        error={isMessageTooLong}
         ref={inputRef}
       />
       <Button btnType="icon" onClick={handleSubmit}>
