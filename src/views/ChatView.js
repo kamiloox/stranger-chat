@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import styles from '../styles/ChatView.module.scss';
 import {
   onStrangerFound,
   onWarning,
@@ -18,11 +17,12 @@ import {
 } from '../api/events';
 import { UserProvider } from '../context/UserContext';
 import { useChatKeywords } from '../context/ChatContext';
+import { emitterTemplate, emitterType } from '../helpers/emitterTemplate';
+import MainTemplate from '../templates/MainTemplate';
 import ChatFooter from '../components/ChatFooter';
 import ChatContent from '../components/ChatContent';
 import ChatHeader from '../components/ChatHeader';
 import Button from '../components/Button';
-import { emitterTemplate, emitterType } from '../helpers/emitterTemplate';
 
 const ChatView = () => {
   const [stranger, setStranger] = useState(null);
@@ -95,7 +95,7 @@ const ChatView = () => {
 
   return (
     <UserProvider>
-      <div className={styles.wrapper}>
+      <MainTemplate>
         <ChatHeader isDisabled={stranger === null} isSearching={isSearching} />
         <ChatContent
           messages={messages}
@@ -108,7 +108,7 @@ const ChatView = () => {
           </Button>
         </ChatContent>
         <ChatFooter isDisabled={stranger === null} askedQuestions={askedQuestions} />
-      </div>
+      </MainTemplate>
     </UserProvider>
   );
 };

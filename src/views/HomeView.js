@@ -1,14 +1,14 @@
 import React from 'react';
-import Button from '../components/Button';
 import routes from '../routes';
+import MainTemplate from '../templates/MainTemplate';
+import Button from '../components/Button';
 
 const HomeView = () => (
-  <div>
-    <h1>Widok domowy</h1>
+  <MainTemplate>
     <Button btnType="link" to={routes.chat}>
       Znajdź rozmówcę
     </Button>
-  </div>
+  </MainTemplate>
 );
 
 export default HomeView;

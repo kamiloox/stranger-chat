@@ -43,7 +43,7 @@ const ChatFooter = ({ isDisabled, askedQuestions }) => {
       setIsExpanded(false);
       setGiphy({ ...giphy, visible: false });
       setCurrentMessage('');
-      e.target.focus();
+      inputRef.current.focus();
     }
   };
 
