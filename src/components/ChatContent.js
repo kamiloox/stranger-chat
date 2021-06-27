@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../styles/ChatContent.module.scss';
-import { useUser } from '../context/UserContext';
+import { useApp } from '../context/AppContext';
 import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
 import Loader from './Loader';
@@ -16,7 +16,7 @@ const Wrapper = forwardRef(({ children }, ref) => (
 ));
 
 const ChatContent = ({ messages, stranger, isTyping, isSearching, children }) => {
-  const { userId } = useUser();
+  const { userId } = useApp();
   const wrapperRef = useRef();
 
   useEffect(() => {

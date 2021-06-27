@@ -4,6 +4,7 @@ import { emitterTemplate, emitterType } from '../helpers/emitterTemplate';
 const ENDPOINT = 'https://kd-alfa.herokuapp.com';
 
 const EVENTS = {
+  connect: 'connect',
   match: 'match',
   stopMatch: 'terminate',
   isTyping: 'isTyping',
@@ -11,10 +12,15 @@ const EVENTS = {
   leaveChat: 'terminate',
   warning: 'warning',
   question: 'question',
-  userId: 'sid',
 };
 
-export const socket = io(ENDPOINT);
+let socket = null;
+
+export const instantiateWS = (persistentId = null) => {
+  socket = io(ENDPOINT, {
+    extraHeaders: { sid: persistentId },
+  });
+};
 
 // Emitters
 
@@ -35,19 +41,21 @@ export const emitMessage = (message, type) =>
 export const emitLeaveChat = () => socket.emit(EVENTS.leaveChat);
 
 // Handlers
-export const onAskQuestion = (callback) => socket.on(EVENTS.question, callback);
+export const onConnect = (callback) => socket?.on(EVENTS.connect, () => callback(socket));
 
-export const onIsTyping = (callback) => socket.on(EVENTS.isTyping, callback);
+export const onAskQuestion = (callback) => socket?.on(EVENTS.question, callback);
 
-export const onGetUserId = (callback) => socket.on(EVENTS.userId, callback);
+export const onIsTyping = (callback) => socket?.on(EVENTS.isTyping, callback);
 
-export const onStrangerFound = (callback) => socket.on(EVENTS.match, callback);
+export const onGetUserId = (callback) => socket?.on(EVENTS.userId, callback);
 
-export const onLeaveChat = (callback) => socket.on(EVENTS.leaveChat, callback);
+export const onStrangerFound = (callback) => socket?.on(EVENTS.match, callback);
 
-export const onMessage = (callback) => socket.on(EVENTS.message, callback);
+export const onLeaveChat = (callback) => socket?.on(EVENTS.leaveChat, callback);
 
-export const onWarning = (callback) => socket.on(EVENTS.warning, callback);
+export const onMessage = (callback) => socket?.on(EVENTS.message, callback);
+
+export const onWarning = (callback) => socket?.on(EVENTS.warning, callback);
 
 // Unsubscribers
 export const offAskQuestion = () => socket.off(EVENTS.question);

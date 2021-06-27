@@ -15,8 +15,8 @@ import {
   offMessage,
   offAskQuestion,
 } from '../api/events';
-import { UserProvider } from '../context/UserContext';
 import { useChatKeywords } from '../context/ChatContext';
+import { useApp } from '../context/AppContext';
 import { emitterTemplate, emitterType } from '../helpers/emitterTemplate';
 import MainTemplate from '../templates/MainTemplate';
 import ChatFooter from '../components/ChatFooter';
@@ -28,9 +28,10 @@ const ChatView = () => {
   const [stranger, setStranger] = useState(null);
   const [messages, setMessages] = useState([]);
   const [askedQuestions, setAskedQuestions] = useState([]);
-  const { keywords } = useChatKeywords();
   const [isSearching, setIsSearching] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const { userId } = useApp();
+  const { keywords } = useChatKeywords();
   const refMatchInterval = useRef(0);
 
   const startSearching = () => {
@@ -40,6 +41,8 @@ const ChatView = () => {
   };
 
   useEffect(() => {
+    if (!userId) return;
+
     onWarning((data) => console.log(data));
 
     onStrangerFound((data) => {
@@ -86,7 +89,7 @@ const ChatView = () => {
       offAskQuestion();
       emitLeaveChat();
     };
-  }, []);
+  }, [userId]);
 
   const stopSearching = () => {
     emitStopMatch();
@@ -94,22 +97,20 @@ const ChatView = () => {
   };
 
   return (
-    <UserProvider>
-      <MainTemplate>
-        <ChatHeader isDisabled={stranger === null} isSearching={isSearching} />
-        <ChatContent
-          messages={messages}
-          stranger={stranger}
-          isTyping={isTyping}
-          isSearching={isSearching}
-        >
-          <Button onClick={() => (isSearching ? stopSearching() : startSearching())}>
-            {isSearching ? 'Przestań szukać' : 'Znajdź nowego rozmówcę'}
-          </Button>
-        </ChatContent>
-        <ChatFooter isDisabled={stranger === null} askedQuestions={askedQuestions} />
-      </MainTemplate>
-    </UserProvider>
+    <MainTemplate>
+      <ChatHeader isDisabled={stranger === null} isSearching={isSearching} />
+      <ChatContent
+        messages={messages}
+        stranger={stranger}
+        isTyping={isTyping}
+        isSearching={isSearching}
+      >
+        <Button onClick={() => (isSearching ? stopSearching() : startSearching())}>
+          {isSearching ? 'Przestań szukać' : 'Znajdź nowego rozmówcę'}
+        </Button>
+      </ChatContent>
+      <ChatFooter isDisabled={stranger === null} askedQuestions={askedQuestions} />
+    </MainTemplate>
   );
 };
 
