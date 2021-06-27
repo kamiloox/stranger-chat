@@ -1,8 +1,121 @@
-.logoWrapper {
+@import './breakpoints';
+
+.menuWrapper {
+  padding: 8px 13px;
+  position: fixed;
+  width: 70%;
+  background-color: var(--color-chat);
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 20;
+  transform: translateX(100%);
+
+  @include bp-laptop {
+    position: static;
+    width: auto;
+    background-color: var(--color-body);
+    padding: 15px 0;
+    transform: translateX(0%);
+  }
+}
+
+.navList {
+  display: inline-flex;
+  justify-content: space-between;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  @include bp-laptop {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.logoLink {
   display: flex;
   align-items: center;
+  text-decoration: none;
+  color: inherit;
 }
 
 .logoName {
   font-size: var(--font-xxl);
+}
+
+.icon {
+  & path {
+    fill: var(--color-text);
+  }
+}
+
+.rightWrapper {
+  display: flex;
+  flex-direction: column;
+
+  @include bp-laptop {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.hamburgerWrapper {
+  cursor: pointer;
+  padding: 0;
+  z-index: 40;
+  position: fixed;
+  top: 13px;
+  right: 25px;
+  background-color: transparent;
+  height: 30px;
+  width: 40px;
+  border: none;
+
+  & span,
+  & span::after,
+  & span::before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-text);
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  & span::before {
+    top: -8px;
+  }
+
+  & span::after {
+    top: 8px;
+    width: 70%;
+    right: 0;
+  }
+
+  @include bp-laptop {
+    display: none;
+  }
+}
+
+.enabled {
+  & span {
+    background-color: transparent;
+    &::before {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    &::after {
+      width: 100%;
+      transform: translateY(-8px) rotate(-45deg);
+    }
+  }
+}
+
+.visibleOnMobile {
+  transition: transform 0.2s;
+  transform: translateX(0);
 }

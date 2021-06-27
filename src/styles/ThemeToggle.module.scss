@@ -1,0 +1,33 @@
+.checkbox {
+  visibility: hidden;
+
+  &:checked + label::after {
+    left: auto;
+    transform: translateX(27px);
+  }
+}
+
+.slider {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 7px;
+  background-color: var(--color-primary);
+  width: 65px;
+  height: 30px;
+  border-radius: 15px;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 23px;
+    height: 23px;
+    background-color: var(--color-text);
+    border-radius: 50%;
+    left: 7px;
+    transition: transform 0.3s;
+  }
+}
